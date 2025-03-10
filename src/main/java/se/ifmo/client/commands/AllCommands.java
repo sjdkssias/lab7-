@@ -1,5 +1,7 @@
 package se.ifmo.client.commands;
 
+import se.ifmo.client.console.Console;
+
 import java.util.List;
 
 public class AllCommands {
