@@ -16,14 +16,13 @@ import se.ifmo.server.models.interfaces.Validatable;
 @JacksonXmlRootElement(localName = "dragon")
 public class Dragon implements Comparable<Dragon>, Validatable {
     @JacksonXmlProperty(isAttribute = true)
-    @JsonIgnore
     private long id;
     @NonNull
     private String name;
     @NonNull
     private Coordinates coordinates;
     @NonNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonIgnore
     private java.time.LocalDate creationDate = java.time.LocalDate.now();
     @NonNull
     private Boolean speaking;

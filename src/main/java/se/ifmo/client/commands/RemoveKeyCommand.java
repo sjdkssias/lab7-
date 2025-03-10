@@ -14,7 +14,7 @@ public class RemoveKeyCommand extends Command{
         if (request.args() == null){
             return new Response("null request");
         }
-        int yourKey = Integer.parseInt(request.args().get(0));
+        long yourKey = Long.parseLong(request.args().get(0));
         CollectionManager.getInstance().removeById(yourKey);
         return new Response("elements with key " + yourKey+ " were removed");
     }

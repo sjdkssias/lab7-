@@ -7,16 +7,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.TreeMap;
 
-public class XmlHandler implements IOHandler<TreeMap<Integer, Dragon>>{
+public class XmlHandler implements IOHandler<TreeMap<Long, Dragon>>{
     private final File file = new File("dragon_collection.xml");
     private final XmlMapper xmlMapper = new XmlMapper();
+    {
+        xmlMapper.findAndRegisterModules();
+    }
     @Override
-    public TreeMap<Integer, Dragon> read() {
+    public TreeMap<Long, Dragon> read() {
         return null;
     }
 
     @Override
-    public void write(TreeMap<Integer, Dragon> value) throws IOException {
+    public void write(TreeMap<Long, Dragon> value) throws IOException {
         xmlMapper.writerWithDefaultPrettyPrinter().writeValue(file, value);
     }
 

@@ -16,7 +16,7 @@ public class InfoCommand extends Command{
 
     @Override
     public Response execute(Request request) throws IOException {
-        TreeMap<Integer, Dragon> collection = CollectionManager.getInstance().getDragons();
+        TreeMap<Long, Dragon> collection = CollectionManager.getInstance().getDragons();
         return new Response("collection type: " + collection.getClass().getSimpleName() + "\n" + "collection size: " + collection.size());
     }
 }

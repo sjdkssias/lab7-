@@ -8,7 +8,7 @@ import se.ifmo.server.models.classes.Dragon;
 public class CollectionManager {
     private static CollectionManager instance;
 
-    private final TreeMap<Integer, Dragon> dragons = new TreeMap<>();
+    private final TreeMap<Long,  Dragon> dragons = new TreeMap<>();
 
 
     private CollectionManager() {
@@ -22,11 +22,11 @@ public class CollectionManager {
         return instance;
     }
 
-    public int generateId(){
+    public long generateId(){
         Random random = new Random();
-        int newId;
+        long newId;
         do {
-            newId = random.nextInt(Integer.MAX_VALUE);
+            newId = random.nextLong();
         } while (dragons.containsKey(newId)); // Генерируем, пока не получим уникальный id
         return newId;
     }
@@ -46,21 +46,21 @@ public class CollectionManager {
     }
 
 
-    public List<Integer> getIds(){
+    public List<Long> getIds(){
         return new ArrayList<>(dragons.keySet());
     }
 
 
-    public boolean containsId(int id) {
+    public boolean containsId(long id) {
         return dragons.containsKey(id);
     }
 
-    public void removeById(int id){
+    public void removeById(long id){
         dragons.remove(id);
     }
 
     public void add(Dragon dragon){
-        int k = generateId();
+        long k = generateId();
         dragons.put(k, dragon);
         dragon.setId(k);
     }
@@ -69,7 +69,7 @@ public class CollectionManager {
         if (dragons.isEmpty()) {
             return Collections.emptyList();
         }
-        int maxKey = dragons.lastKey();
+        long maxKey = dragons.lastKey();
         return List.of(dragons.get(maxKey));
     }
 

@@ -23,9 +23,9 @@ public class InsertCommand extends Command{
 
         console.write("Enter the ID for the new dragon (Integer value):");
         String idString = console.read();
-        Integer id;
+        Long id;
         try {
-            id = Integer.parseInt(idString);
+            id = Long.parseLong(idString);
         } catch (NumberFormatException e) {
             return new Response("Invalid ID format. Please enter a valid integer.");
         }
