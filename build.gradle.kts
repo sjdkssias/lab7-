@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     // Добавьте Lombok
+    implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     compileOnly("org.projectlombok:lombok:1.18.30")
