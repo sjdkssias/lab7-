@@ -2,6 +2,7 @@ package se.ifmo.client.chat;
 
 import se.ifmo.server.models.classes.Dragon;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public record Response(
          * This could include dragons retrieved, added, or modified based on the executed command.
          */
         List<Dragon> dragons
-) {
+) implements Serializable {
 
     /**
      * Constructor to create a response with a message and a list of dragons.
@@ -60,5 +61,19 @@ public record Response(
         return message;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "";
+    }
 }
 

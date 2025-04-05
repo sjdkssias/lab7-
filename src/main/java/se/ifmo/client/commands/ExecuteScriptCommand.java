@@ -55,7 +55,7 @@ public class ExecuteScriptCommand extends Command {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!line.isEmpty()) {
-                    Response cr = Router.routeCommand(line, null, request.console());
+                    Response cr = Router.routeCommand(line, null);
                     result.append(cr.getMessage()).append(System.lineSeparator());
                 }
             }

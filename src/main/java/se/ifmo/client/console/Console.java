@@ -11,9 +11,17 @@ import java.io.*;
  * {@link BufferedWriter}.
  */
 public final class Console implements ConsoleWorker<String> {
+    private static Console instance;
     private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
+
+    public static Console getInstance() {
+        if (instance == null) {
+            instance = new Console();
+        }
+        return instance;
+    }
     /**
      * Reads a line of input from the console.
      *

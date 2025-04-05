@@ -24,11 +24,7 @@ public record Request(
         /**
          * A list of dragons associated with the command, if applicable.
          */
-        List<Dragon> dragons,
+        List<Dragon> dragons
 
-        /**
-         * The console instance used for interacting with the user.
-         */
-        Console console
 ) {
 }

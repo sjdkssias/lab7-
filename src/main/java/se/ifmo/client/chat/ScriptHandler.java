@@ -94,7 +94,7 @@ public class ScriptHandler implements AutoCloseable {
 
             // Prepare a request with no dragons for simple commands.
             List<Dragon> dragons = new ArrayList<>();
-            Request request = new Request(commandName, args, dragons, console);
+            Request request = new Request(commandName, args, dragons);
 
             // Handle the command and display the result.
             Response response = Handler.handleCommand(command, request);

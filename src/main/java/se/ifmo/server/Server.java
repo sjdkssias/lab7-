@@ -22,7 +22,7 @@ public class Server implements AutoCloseable{
     private Selector selector;
     private ServerSocketChannel serverSocketChannel;
     private Console console;
-    private ByteBuffer buff;
+    private ByteBuffer buf;
 
 
     private void start(){
@@ -85,7 +85,7 @@ public class Server implements AutoCloseable{
             buf.clear();
 
             Request request = SerializationUtils.deserialize(data);
-            Response response = Router.routeCommand(request.command(), request.args(), request.console());
+            Response response = Router.routeCommand(request.command(), request.args());
 
             byte[] responseData = SerializationUtils.serialize(response);
             key.attach(ByteBuffer.wrap(responseData));
@@ -96,7 +96,15 @@ public class Server implements AutoCloseable{
     }
 
     private void writeKey(SelectionKey key) throws IOException{
+        SocketChannel socketChannel = (SocketChannel) key.channel();
+        ByteBuffer buf = (ByteBuffer) key.attachment();
+        socketChannel.write(buf);
 
+        if (!buf.hasRemaining()){
+            buf.clear();
+            key.attach(ByteBuffer.allocate(BUFFER_SIZE));
+            key.interestOps(SelectionKey.OP_READ);
+        }
     }
 
     private void closeConnection(SelectionKey key){

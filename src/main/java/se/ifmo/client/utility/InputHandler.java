@@ -78,7 +78,7 @@ public class InputHandler {
             final Console console
     ) throws InterruptedException {
         try {
-            console.write(" - " + fieldName);
+            console.write(" - " + fieldName + ": ");
             String line = console.read();
             if (line == null || line.equals("return")) throw new InterruptedException("called return");
 
