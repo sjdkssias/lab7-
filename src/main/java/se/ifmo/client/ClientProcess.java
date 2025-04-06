@@ -1,7 +1,5 @@
 package se.ifmo.client;
 import se.ifmo.client.chat.Request;
-import se.ifmo.client.chat.Response;
-import se.ifmo.client.chat.Router;
 import se.ifmo.client.commands.Command;
 import se.ifmo.client.console.Console;
 import se.ifmo.client.utility.InputHandler;
@@ -26,7 +24,7 @@ public class ClientProcess {
         while (true) {
             try {
                 Request request = createRequest();
-
+                client.sendRequest(request);
             } catch (Exception ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {
@@ -38,20 +36,14 @@ public class ClientProcess {
             }
         }
     }
-    private void handleResponse(Response response) {
-        if (response != null) {
-            console.writeln("Server response: " + response.getMessage());
-        } else {
-            console.writeln("No response from the server.");
-        }
-    }
+
     private Request createRequest() throws InterruptedException {
         while (true) {
             String input = readCommandName();
 
             if (input.equalsIgnoreCase("exit")) {
                 console.writeln("Exiting");
-                break;
+                return null;
             }
 
             String[] parts = input.split("\\s+", 2);

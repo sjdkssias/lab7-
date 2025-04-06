@@ -18,11 +18,10 @@ public class Client implements AutoCloseable{
     private Socket socket;
     private Console console;
     private ByteBuffer buf;
-    private PrintWriter writer;
-    private BufferedReader reader;
+    private InputStream in;
     private boolean isConnected;
     private ClientProcess clientProcess;
-
+    private OutputStream out;
     public Client(Console console){
         this.console = console;
         init();
@@ -33,8 +32,8 @@ public class Client implements AutoCloseable{
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(HOST, PORT));
-            writer = new PrintWriter(socket.getOutputStream());
-            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = socket.getOutputStream();
+            in = socket.getInputStream();
             isConnected = true;
         } catch (UnknownHostException e) {
             console.writeln("Unknown host to connect: " + e.getMessage());
@@ -54,6 +53,13 @@ public class Client implements AutoCloseable{
         (new ClientProcess(console, this)).startProcess();
     }
 
+    protected void sendRequest(Request request) throws IOException{
+        byte[] data = SerializationUtils.serialize(request);
+        out.write(data);
+        out.flush();
+    }
+
+
 
     protected void reconnect() throws IOException {
         close();
@@ -69,8 +75,8 @@ public class Client implements AutoCloseable{
         try {
             if (socket!= null && !socket.isClosed()) {
                 isConnected = false;
-                writer.close();
-                reader.close();
+                out.close();
+                in.close();
                 socket.close();
                 console.writeln("Connection was closed");
             }
