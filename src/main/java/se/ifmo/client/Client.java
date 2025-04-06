@@ -11,7 +11,6 @@ import java.nio.*;
 public class Client implements AutoCloseable{
     private static final String HOST = "localhost";
     private static final int PORT = 8080;
-    private static final int BUFFERSIZE = 1024;
 
 
     private Socket socket;
@@ -20,6 +19,7 @@ public class Client implements AutoCloseable{
     private PrintWriter writer;
     private BufferedReader reader;
     private boolean isConnected;
+    private ClientProcess clientProcess;
 
     public Client(Console console){
         this.console = console;
@@ -43,10 +43,20 @@ public class Client implements AutoCloseable{
         }
     }
 
+    public void start(){
+        if (!isConnected){
+            console.writeln("The client isn't connected to the server");
+            return;
+        }
+        clientProcess = new ClientProcess(console);
+        clientProcess.startProcess();
+    }
 
     private void sendMessage(Response response){
 
     }
+    
+
     private void reconnect() throws IOException {
         close();
         init();

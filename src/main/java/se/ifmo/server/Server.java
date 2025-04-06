@@ -4,6 +4,7 @@ import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
 import se.ifmo.client.console.Console;
+import se.ifmo.server.collectionManagement.CollectionManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

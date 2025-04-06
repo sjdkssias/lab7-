@@ -3,7 +3,7 @@ package se.ifmo.client.commands;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.console.Console;
-import se.ifmo.server.CollectionManager;
+import se.ifmo.server.collectionManagement.CollectionManager;
 
 /**
  * The {@link RemoveKeyCommand} class represents a command that removes all elements from the collection
