@@ -25,8 +25,10 @@ public class Server implements AutoCloseable{
     private Console console;
     private ByteBuffer buf;
 
-
-    private void start(){
+    public Server(Console console){
+        this.console = console;
+    }
+    protected void start(){
         try {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(PORT));
@@ -48,7 +50,7 @@ public class Server implements AutoCloseable{
         console.writeln("Connected to: " + remoteAddr);
     }
 
-    private void processKeys() throws IOException {
+    protected void processKeys() throws IOException {
         selector.selectNow();
 
         Iterator<SelectionKey> selectedKeys = selector.selectedKeys().iterator();

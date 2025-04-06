@@ -44,20 +44,20 @@ public class Client implements AutoCloseable{
     }
 
     public void start(){
+
         if (!isConnected){
             console.writeln("The client isn't connected to the server");
             return;
         }
-        clientProcess = new ClientProcess(console);
-        clientProcess.startProcess();
+        (new ClientProcess(console, this)).startProcess();
     }
 
     private void sendMessage(Response response){
 
     }
-    
 
-    private void reconnect() throws IOException {
+
+    protected void reconnect() throws IOException {
         close();
         init();
         if (isConnected){

@@ -81,7 +81,6 @@ public class XmlHandler implements IOHandler<TreeMap<Long, Dragon>> {
             List<MapEntry> entries = new ArrayList<>();
             value.forEach((key, dragon) -> entries.add(new MapEntry(dragon.getId(), dragon)));
             xmlMapper.writer().withDefaultPrettyPrinter().writeValue(fileWriter, entries);
-            System.out.println(xmlMapper.writer().withDefaultPrettyPrinter().writeValueAsString(entries));
         } catch (IOException e) {
             System.err.println("Error writing to file: " + filePath.getFileName());
             System.err.println(e.getMessage());

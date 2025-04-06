@@ -3,15 +3,18 @@ import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
 import se.ifmo.client.console.Console;
 
+import java.io.IOException;
 import java.util.List;
 
 
 public class ClientProcess {
 
     private Console console;
+    private Client client;
 
-    public ClientProcess(Console console){
+    public ClientProcess(Console console, Client client){
         this.console = console;
+        this.client = client;
     }
 
     protected void startProcess(){
@@ -36,8 +39,16 @@ public class ClientProcess {
 
                 handleResponse(response);
 
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } catch (IOException ioEx) {
+                console.writeln("Connection error: " + ioEx.getMessage());
+                try {
+                    client.reconnect();
+                } catch (IOException e) {
+                    console.writeln("Failed to reconnect");
+                    break;
+                }
+            } catch (Exception e) { // любые другие ошибки
+                console.writeln("Unexpected error: " + e.getMessage());
             }
         }
     }

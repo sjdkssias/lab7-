@@ -1,22 +1,5 @@
 <ArrayList>
   <item>
-    <key>-6486701387968267478</key>
-    <value>
-      <name>1</name>
-      <coordinates>
-        <x>1.0</x>
-        <y>1</y>
-      </coordinates>
-      <creationDate>2025-04-06</creationDate>
-      <speaking>true</speaking>
-      <color>RED</color>
-      <character/>
-      <head>
-        <toothcount>12.0</toothcount>
-      </head>
-    </value>
-  </item>
-  <item>
     <key>0</key>
     <value>
       <name>1</name>
