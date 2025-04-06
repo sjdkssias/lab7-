@@ -37,15 +37,11 @@ public class UpdateIdCommand extends Command {
             return new Response("null request");
         }
 
-        Console console = new Console();
 
-        // Prompt the user for the dragon ID
-        console.write("Enter the ID for the new dragon (Integer value):");
-        String idString = console.read();
         Long id;
         try {
             // Parse the ID
-            id = Long.parseLong(idString);
+            id = Long.parseLong(request.args().get(0));
         } catch (NumberFormatException e) {
             // Handle invalid ID format
             return new Response("Invalid ID format. Please enter a valid integer.");
