@@ -23,12 +23,14 @@ public class Client implements AutoCloseable{
 
     public Client(Console console){
         this.console = console;
+        init();
     }
 
 
     public void init(){
         try {
-            socket = new Socket(HOST, PORT);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(HOST, PORT));
             writer = new PrintWriter(socket.getOutputStream());
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             isConnected = true;
