@@ -1,6 +1,5 @@
 package se.ifmo.client.chat;
 
-import se.ifmo.client.console.Console;
 import se.ifmo.server.models.classes.Dragon;
 
 import java.io.Serializable;

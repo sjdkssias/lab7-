@@ -2,18 +2,21 @@ package se.ifmo.client;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
+import se.ifmo.client.commands.Command;
 import se.ifmo.client.console.Console;
-
+import se.ifmo.client.utility.InputHandler;
+import se.ifmo.server.models.classes.Dragon;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import static se.ifmo.client.commands.AllCommands.ALLCOMANDS;
 
 
 public class ClientProcess {
 
     private Console console;
     private Client client;
-
+    private Command command;
     public ClientProcess(Console console, Client client){
         this.console = console;
         this.client = client;
@@ -22,29 +25,24 @@ public class ClientProcess {
     protected void startProcess(){
         while (true) {
             try {
-                String command = readCommandName();
+                String input = readCommandName();
 
-                if (command.equalsIgnoreCase("exit")) {
+                if (input.equalsIgnoreCase("exit")) {
                     console.writeln("Exiting");
                     break;
                 }
 
-                if (!validCommand(command)) {
+                if (!validCommand(input)) {
                     continue;
                 }
 
-                String[] parts = command.split("\\s+", 2);
+                String[] parts = input.split("\\s+", 2);
                 String commandName = parts[0];
                 String arguments = parts.length > 1 ? parts[1] : "";
-                Request request = new Request(commandName, List.of(arguments), new ArrayList<>());
+                Request request = createRequest(commandName, arguments);
 
-                // ОТПРАВЛЯЕМ запрос на сервер
-                client.sendRequest(request);
+                Response response = Router.routeCommand(commandName, List.of(arguments));
 
-                // ПОЛУЧАЕМ ответ от сервера
-                Response response = client.receiveResponse();
-
-                // ОБРАБАТЫВАЕМ ответ от сервера
                 handleResponse(response);
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
@@ -54,12 +52,11 @@ public class ClientProcess {
                     console.writeln("Failed to reconnect");
                     break;
                 }
-            } catch (Exception e) { // любые другие ошибки
+            } catch (Exception e) {
                 console.writeln("Unexpected error: " + e.getMessage());
             }
         }
     }
-
     private void handleResponse(Response response) {
         if (response != null) {
             console.writeln("Server response: " + response.getMessage());
@@ -67,13 +64,28 @@ public class ClientProcess {
             console.writeln("No response from the server.");
         }
     }
+    private Request createRequest(String commandName, String arguments) throws InterruptedException {
+        List<Dragon> dragons = null;
+
+        if (requiresDragons(commandName)) {
+            dragons = List.of(InputHandler.get(console));
+        }
+
+        return new Request(commandName, List.of(arguments), dragons);
+    }
+
+    private boolean requiresDragons(String commandName) {
+        return ALLCOMANDS.stream()
+                .anyMatch(temp -> temp.getName().equals(commandName)
+                && temp.getElementNumber() != 0);
+    }
 
     private String readCommandName(){
         return console.read().trim();
     }
 
-    private boolean validCommand(String commandName){
-        if (commandName == "save"){
+    private boolean validCommand(String input){
+        if (input == "save"){
             console.writeln("This command isn't allowed for client");
             return false;
         }

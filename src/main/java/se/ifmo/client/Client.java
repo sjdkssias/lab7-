@@ -55,20 +55,6 @@ public class Client implements AutoCloseable{
     }
 
 
-    public void sendRequest(Request request) throws IOException {
-        byte[] requestData = SerializationUtils.serialize(request);
-        socket.getOutputStream().write(requestData);
-        socket.getOutputStream().flush();
-    }
-
-    public Response receiveResponse() throws IOException{
-        byte[] responseData = new byte[4096];
-        int bytesRead = socket.getInputStream().read(responseData);
-        if (bytesRead == -1) {
-            throw new IOException("Server disconnected");
-        }
-        return SerializationUtils.deserialize(responseData);
-    }
     protected void reconnect() throws IOException {
         close();
         init();
