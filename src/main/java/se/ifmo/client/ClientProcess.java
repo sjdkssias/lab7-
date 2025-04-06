@@ -1,9 +1,11 @@
 package se.ifmo.client;
+import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
 import se.ifmo.client.console.Console;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,11 +36,16 @@ public class ClientProcess {
                 String[] parts = command.split("\\s+", 2);
                 String commandName = parts[0];
                 String arguments = parts.length > 1 ? parts[1] : "";
+                Request request = new Request(commandName, List.of(arguments), new ArrayList<>());
 
-                Response response = Router.routeCommand(commandName, List.of(arguments));
+                // ОТПРАВЛЯЕМ запрос на сервер
+                client.sendRequest(request);
 
+                // ПОЛУЧАЕМ ответ от сервера
+                Response response = client.receiveResponse();
+
+                // ОБРАБАТЫВАЕМ ответ от сервера
                 handleResponse(response);
-
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {

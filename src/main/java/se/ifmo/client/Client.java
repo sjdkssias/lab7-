@@ -1,5 +1,7 @@
 package se.ifmo.client;
 
+import org.apache.commons.lang3.SerializationUtils;
+import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.console.Console;
 
@@ -52,11 +54,21 @@ public class Client implements AutoCloseable{
         (new ClientProcess(console, this)).startProcess();
     }
 
-    private void sendMessage(Response response){
 
+    public void sendRequest(Request request) throws IOException {
+        byte[] requestData = SerializationUtils.serialize(request);
+        socket.getOutputStream().write(requestData);
+        socket.getOutputStream().flush();
     }
 
-
+    public Response receiveResponse() throws IOException{
+        byte[] responseData = new byte[4096];
+        int bytesRead = socket.getInputStream().read(responseData);
+        if (bytesRead == -1) {
+            throw new IOException("Server disconnected");
+        }
+        return SerializationUtils.deserialize(responseData);
+    }
     protected void reconnect() throws IOException {
         close();
         init();

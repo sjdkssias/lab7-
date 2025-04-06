@@ -88,6 +88,7 @@ public class Server implements AutoCloseable{
             buf.clear();
 
             Request request = SerializationUtils.deserialize(data);
+            System.out.println("Received request: " + request.command() + " with arguments: " + request.args());
             Response response = Router.routeCommand(request.command(), request.args());
 
             byte[] responseData = SerializationUtils.serialize(response);
