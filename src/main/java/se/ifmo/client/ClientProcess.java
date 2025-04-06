@@ -25,26 +25,9 @@ public class ClientProcess {
     protected void startProcess(){
         while (true) {
             try {
-                String input = readCommandName();
+                Request request = createRequest();
 
-                if (input.equalsIgnoreCase("exit")) {
-                    console.writeln("Exiting");
-                    break;
-                }
-
-                if (!validCommand(input)) {
-                    continue;
-                }
-
-                String[] parts = input.split("\\s+", 2);
-                String commandName = parts[0];
-                String arguments = parts.length > 1 ? parts[1] : "";
-                Request request = createRequest(commandName, arguments);
-
-                Response response = Router.routeCommand(commandName, List.of(arguments));
-
-                handleResponse(response);
-            } catch (IOException ioEx) {
+            } catch (Exception ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {
                     client.reconnect();
@@ -52,8 +35,6 @@ public class ClientProcess {
                     console.writeln("Failed to reconnect");
                     break;
                 }
-            } catch (Exception e) {
-                console.writeln("Unexpected error: " + e.getMessage());
             }
         }
     }
@@ -64,14 +45,26 @@ public class ClientProcess {
             console.writeln("No response from the server.");
         }
     }
-    private Request createRequest(String commandName, String arguments) throws InterruptedException {
-        List<Dragon> dragons = null;
+    private Request createRequest() throws InterruptedException {
+        while (true) {
+            String input = readCommandName();
 
-        if (requiresDragons(commandName)) {
-            dragons = List.of(InputHandler.get(console));
+            if (input.equalsIgnoreCase("exit")) {
+                console.writeln("Exiting");
+                break;
+            }
+
+            String[] parts = input.split("\\s+", 2);
+            String commandName = parts[0];
+            String arguments = parts.length > 1 ? parts[1] : "";
+            List<Dragon> dragons = null;
+
+            if (requiresDragons(commandName)) {
+                dragons = List.of(InputHandler.get(console));
+            }
+
+            return new Request(commandName, List.of(arguments), dragons);
         }
-
-        return new Request(commandName, List.of(arguments), dragons);
     }
 
     private boolean requiresDragons(String commandName) {
@@ -84,12 +77,5 @@ public class ClientProcess {
         return console.read().trim();
     }
 
-    private boolean validCommand(String input){
-        if (input == "save"){
-            console.writeln("This command isn't allowed for client");
-            return false;
-        }
-        return true;
-    }
 
 }
