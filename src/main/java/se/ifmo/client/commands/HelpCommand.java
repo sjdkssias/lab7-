@@ -4,24 +4,24 @@ import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 
 /**
- * The {@link HelpCommand} class represents a command that displays the description of all available commands.
- * This command shows a list of commands and their associated descriptions to the user.
+ * The {@link HelpCommand} class represents a commandName that displays the description of all available commands.
+ * This commandName shows a list of commands and their associated descriptions to the user.
  */
 public class HelpCommand extends Command {
 
     /**
      * Constructs a {@link HelpCommand}.
-     * Initializes the command with the name "help" and description "show description of all commands".
+     * Initializes the commandName with the name "help" and description "show description of all commands".
      */
     public HelpCommand() {
         super("help", "show description of all commands");
     }
 
     /**
-     * Executes the "help" command. This command retrieves and returns the list of all available commands along
+     * Executes the "help" commandName. This commandName retrieves and returns the list of all available commands along
      * with their descriptions. It allows the user to view all possible commands and what they do.
      *
-     * @param request the request containing any arguments for the command execution (not used in this case)
+     * @param request the request containing any arguments for the commandName execution (not used in this case)
      * @return a {@link Response} containing a formatted string with the descriptions of all available commands
      */
     @Override

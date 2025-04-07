@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * The {@link CommandsBuff} class is used to manage a fixed-size buffer of commands.
  * It keeps track of the most recent commands, ensuring that if the buffer reaches its maximum size,
- * the oldest command is discarded in favor of the new one.
+ * the oldest commandName is discarded in favor of the new one.
  */
 class CommandsBuff {
     private final Deque<String> deque;
@@ -24,10 +24,10 @@ class CommandsBuff {
     }
 
     /**
-     * Adds a new command to the buffer. If the buffer is full, the oldest command is removed to make room
+     * Adds a new commandName to the buffer. If the buffer is full, the oldest commandName is removed to make room
      * for the new one.
      *
-     * @param element the command to add to the buffer.
+     * @param element the commandName to add to the buffer.
      */
     public void add(String element) {
         if (deque.size() == size) deque.removeFirst();
@@ -67,9 +67,9 @@ public class HistoryManager {
     }
 
     /**
-     * Adds a new command to the command history.
+     * Adds a new commandName to the commandName history.
      *
-     * @param command the command to add to the history.
+     * @param command the commandName to add to the history.
      */
     public void addCommand(String command) {
         commandsBuff.add(command);

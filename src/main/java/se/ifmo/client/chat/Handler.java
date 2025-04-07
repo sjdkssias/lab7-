@@ -8,24 +8,24 @@ import java.io.IOException;
 
 /**
  * The {@link Handler} class is responsible for managing and executing commands.
- * It handles the processing of commands by adding the command to the history and then executing it.
+ * It handles the processing of commands by adding the commandName to the history and then executing it.
  */
 public class Handler {
 
     /**
-     * Handles the execution of a given command. This method adds the command name to the history
-     * and then executes the command with the provided request.
+     * Handles the execution of a given commandName. This method adds the commandName name to the history
+     * and then executes the commandName with the provided request.
      *
-     * @param command the command to execute
-     * @param request the request containing the parameters for the command
-     * @return a {@link Response} object containing the result of the command execution
-     * @throws IOException if an I/O error occurs during the command execution
+     * @param command the commandName to execute
+     * @param request the request containing the parameters for the commandName
+     * @return a {@link Response} object containing the result of the commandName execution
+     * @throws IOException if an I/O error occurs during the commandName execution
      */
     public static Response handleCommand(Command command, Request request) throws IOException {
-        // Add the command to the history
+        // Add the commandName to the history
         HistoryManager.getInstance().addCommand(command.getName());
 
-        // Execute the command and return the response
+        // Execute the commandName and return the response
         return command.execute(request);
     }
 }

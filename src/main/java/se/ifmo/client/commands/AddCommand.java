@@ -5,11 +5,11 @@ import se.ifmo.client.chat.Response;
 import se.ifmo.server.collectionManagement.CollectionManager;
 
 /**
- * The {@link AddCommand} class represents a command that adds a dragon to the collection.
+ * The {@link AddCommand} class represents a commandName that adds a dragon to the collection.
  * This class extends the {@link Command} class and implements the logic to add a dragon
  * from the given request to the collection managed by the {@link CollectionManager}.
  *
- * <p>This command checks if there are dragons in the request, and if so, it adds the first dragon
+ * <p>This commandName checks if there are dragons in the request, and if so, it adds the first dragon
  * to the collection. If no dragons are provided in the request, a response indicating that
  * no dragons are available for addition is returned.</p>
  */
@@ -24,7 +24,7 @@ public class AddCommand extends Command {
     }
 
     /**
-     * Executes the command to add a dragon to the collection.
+     * Executes the commandName to add a dragon to the collection.
      * It checks if the provided request contains dragons and adds the first one to the collection if present.
      * If no dragons are provided, it returns a response indicating that no dragons are available for addition.
      *

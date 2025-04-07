@@ -2,6 +2,8 @@ package se.ifmo.server.models.classes;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * Represents the head of a dragon, containing the number of teeth.
  */
@@ -9,7 +11,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DragonHead {
+public class DragonHead implements Serializable {
 
     /**
      * The number of teeth in the dragon's head.

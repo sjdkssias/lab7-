@@ -3,11 +3,13 @@ package se.ifmo.server.models.classes;
 import lombok.*;
 import se.ifmo.server.models.interfaces.Validatable;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Coordinates implements Validatable {
+public class Coordinates implements Validatable, Serializable {
 
     /**
      * The x-coordinate of the point.

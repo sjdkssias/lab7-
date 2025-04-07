@@ -7,19 +7,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The {@link Response} record represents the response sent after processing a command.
+ * The {@link Response} record represents the response sent after processing a commandName.
  * It contains a message with additional data (such as dragons) if required.
- * This is the result returned from executing a command and can be sent back to the user.
+ * This is the result returned from executing a commandName and can be sent back to the user.
  */
 public record Response(
         /**
-         * The message accompanying the response, typically a status or output from the executed command.
+         * The message accompanying the response, typically a status or output from the executed commandName.
          */
         String message,
 
         /**
          * A list of dragons associated with the response, if applicable.
-         * This could include dragons retrieved, added, or modified based on the executed command.
+         * This could include dragons retrieved, added, or modified based on the executed commandName.
          */
         List<Dragon> dragons
 ) implements Serializable {
@@ -39,7 +39,7 @@ public record Response(
      *
      * @param message The message to be included in the response.
      */
-    public Response(String message){
+    public Response(String message) {
         this(message, Collections.emptyList());
     }
 
@@ -48,7 +48,7 @@ public record Response(
      *
      * @return An empty response.
      */
-    public static Response empty(){
+    public static Response empty() {
         return new Response(null);
     }
 
@@ -57,23 +57,8 @@ public record Response(
      *
      * @return The message of the response.
      */
-    public String getMessage(){
+    public String getMessage() {
         return message;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public String toString() {
-        return "";
     }
 }
 

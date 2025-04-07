@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * The {@link RemoveGreaterKeyCommand} class represents a command that removes all dragons from the collection
+ * The {@link RemoveGreaterKeyCommand} class represents a commandName that removes all dragons from the collection
  * whose key is greater than a specified value.
- * This command is used to remove dragons whose ID (key) is greater than the ID entered by the user.
+ * This commandName is used to remove dragons whose ID (key) is greater than the ID entered by the user.
  */
 public class RemoveGreaterKeyCommand extends Command {
 
     /**
      * Constructs a {@link RemoveGreaterKeyCommand}.
-     * Initializes the command with the name "remove_greater_key" and the description
+     * Initializes the commandName with the name "remove_greater_key" and the description
      * "remove all elements whose key is greater than your specified value".
      */
     public RemoveGreaterKeyCommand() {
@@ -27,10 +27,10 @@ public class RemoveGreaterKeyCommand extends Command {
     }
 
     /**
-     * Executes the "remove_greater_key" command. This command removes all dragons from the collection
+     * Executes the "remove_greater_key" commandName. This commandName removes all dragons from the collection
      * whose key (ID) is greater than the value specified by the user.
      *
-     * @param request the request containing parameters for the command (in this case, no arguments are required)
+     * @param request the request containing parameters for the commandName (in this case, no arguments are required)
      * @return a {@link Response} containing a message indicating the result of the removal operation
      */
     @Override

@@ -7,11 +7,13 @@ import se.ifmo.server.models.enums.Color;
 import se.ifmo.server.models.enums.DragonCharacter;
 import se.ifmo.server.models.interfaces.Validatable;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @Data
 @Getter
 @EqualsAndHashCode
-public class Dragon implements Comparable<Dragon>, Validatable {
+public class Dragon implements Comparable<Dragon>, Validatable, Serializable {
 
     /**
      * The unique identifier of the dragon.

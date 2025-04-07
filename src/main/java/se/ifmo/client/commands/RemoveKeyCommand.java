@@ -6,15 +6,15 @@ import se.ifmo.client.console.Console;
 import se.ifmo.server.collectionManagement.CollectionManager;
 
 /**
- * The {@link RemoveKeyCommand} class represents a command that removes all elements from the collection
+ * The {@link RemoveKeyCommand} class represents a commandName that removes all elements from the collection
  * with a specified key (ID).
- * This command is used to remove all dragons whose key matches the given ID.
+ * This commandName is used to remove all dragons whose key matches the given ID.
  */
 public class RemoveKeyCommand extends Command {
 
     /**
      * Constructs a {@link RemoveKeyCommand}.
-     * Initializes the command with the name "remove_key" and the description
+     * Initializes the commandName with the name "remove_key" and the description
      * "remove all elements who have the given key".
      */
     public RemoveKeyCommand() {
@@ -22,10 +22,10 @@ public class RemoveKeyCommand extends Command {
     }
 
     /**
-     * Executes the "remove_key" command. This command removes all elements from the collection
+     * Executes the "remove_key" commandName. This commandName removes all elements from the collection
      * whose key (ID) matches the value specified by the user.
      *
-     * @param request the request containing parameters for the command (in this case, the ID to remove)
+     * @param request the request containing parameters for the commandName (in this case, the ID to remove)
      * @return a {@link Response} containing a message indicating the result of the removal operation
      */
     @Override

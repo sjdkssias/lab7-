@@ -10,15 +10,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The {@link PrintUniqueHeadCommand} class represents a command that finds and displays dragons
+ * The {@link PrintUniqueHeadCommand} class represents a commandName that finds and displays dragons
  * with unique head characteristics, specifically with a tooth count that occurs only once in the collection.
- * This command filters the collection of dragons to return only those whose head's tooth count is unique.
+ * This commandName filters the collection of dragons to return only those whose head's tooth count is unique.
  */
 public class PrintUniqueHeadCommand extends Command {
 
     /**
      * Constructs a {@link PrintUniqueHeadCommand}.
-     * Initializes the command with the name "print_unique_head" and the description
+     * Initializes the commandName with the name "print_unique_head" and the description
      * "print unique dragon's head".
      */
     public PrintUniqueHeadCommand() {
@@ -26,11 +26,11 @@ public class PrintUniqueHeadCommand extends Command {
     }
 
     /**
-     * Executes the "print_unique_head" command. This command filters the collection to find dragons
+     * Executes the "print_unique_head" commandName. This commandName filters the collection to find dragons
      * whose head's tooth count is unique (i.e., appears only once in the collection),
      * and returns a list of those dragons.
      *
-     * @param request the request containing parameters for the command (not used in this case)
+     * @param request the request containing parameters for the commandName (not used in this case)
      * @return a {@link Response} containing a string representation of dragons with unique heads
      */
     @Override

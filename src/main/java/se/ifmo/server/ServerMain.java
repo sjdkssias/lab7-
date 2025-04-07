@@ -7,7 +7,6 @@ public class ServerMain {
         try (Console console = new Console();
              Server server = new Server(console)) {
 
-            server.start();
             console.writeln("Server is running...");
 
             while (true) {

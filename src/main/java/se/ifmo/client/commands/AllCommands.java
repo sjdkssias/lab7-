@@ -6,14 +6,14 @@ import java.util.List;
  * The {@link AllCommands} class holds a static list of all available commands in the application.
  * It is used to manage and access all the commands that can be executed by the client.
  *
- * <p>This class serves as a centralized collection of command objects, which can be used to execute
+ * <p>This class serves as a centralized collection of commandName objects, which can be used to execute
  * various actions like adding dragons, showing information, and more.</p>
  */
 public class AllCommands {
 
     /**
      * A static list containing all available commands.
-     * Each command in this list is an instance of a specific subclass of {@link Command}.
+     * Each commandName in this list is an instance of a specific subclass of {@link Command}.
      * The list is initialized with the full set of commands the client can execute.
      */
     public static final List<Command> ALLCOMANDS = List.of(
@@ -31,8 +31,8 @@ public class AllCommands {
             new PrintUniqueHeadCommand(),
             new RemoveLowerKeyCommand(),
             new ShowCommand(),
-            new ExecuteScriptCommand(),
-            new InfoCommand()
+            new InfoCommand(),
+            new ExecuteScriptCommand()
     );
 
     /**

@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * The {@link RemoveLowerKeyCommand} class represents a command that removes all elements from the collection
+ * The {@link RemoveLowerKeyCommand} class represents a commandName that removes all elements from the collection
  * whose key (ID) is less than the specified one.
- * This command is used to remove dragons whose key is less than the provided value.
+ * This commandName is used to remove dragons whose key is less than the provided value.
  */
 public class RemoveLowerKeyCommand extends Command {
 
     /**
      * Constructs a {@link RemoveLowerKeyCommand}.
-     * Initializes the command with the name "remove_lower_key" and the description
+     * Initializes the commandName with the name "remove_lower_key" and the description
      * "remove from the collection all elements whose key is less than the given one".
      */
     public RemoveLowerKeyCommand() {
@@ -27,10 +27,10 @@ public class RemoveLowerKeyCommand extends Command {
     }
 
     /**
-     * Executes the "remove_lower_key" command. This command removes all elements from the collection
+     * Executes the "remove_lower_key" commandName. This commandName removes all elements from the collection
      * whose key (ID) is less than the value specified by the user.
      *
-     * @param request the request containing parameters for the command (in this case, the ID threshold for removal)
+     * @param request the request containing parameters for the commandName (in this case, the ID threshold for removal)
      * @return a {@link Response} containing a message indicating the result of the removal operation
      */
     @Override

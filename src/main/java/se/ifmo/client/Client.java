@@ -7,28 +7,25 @@ import se.ifmo.client.console.Console;
 
 import java.io.*;
 import java.net.*;
-import java.nio.*;
+import java.util.Arrays;
 
 
-public class Client implements AutoCloseable{
+public class Client implements AutoCloseable {
     private static final String HOST = "localhost";
     private static final int PORT = 8080;
 
-
     private Socket socket;
     private Console console;
-    private ByteBuffer buf;
     private InputStream in;
     private boolean isConnected;
-    private ClientProcess clientProcess;
     private OutputStream out;
-    public Client(Console console){
+
+    public Client(Console console) {
         this.console = console;
         init();
     }
 
-
-    public void init(){
+    public void init() {
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(HOST, PORT));
@@ -44,45 +41,47 @@ public class Client implements AutoCloseable{
         }
     }
 
-    public void start(){
-
-        if (!isConnected){
+    public void start() {
+        if (!isConnected) {
             console.writeln("The client isn't connected to the server");
             return;
         }
         (new ClientProcess(console, this)).startProcess();
     }
 
-    protected void sendRequest(Request request) throws IOException{
-        byte[] data = SerializationUtils.serialize(request);
-        out.write(data);
+    protected void sendRequest(Request request) throws IOException {
+        out.write(SerializationUtils.serialize(request));
         out.flush();
     }
 
 
+    protected void receiveResponse() throws IOException{
+        byte[] buf = new byte[1500];
+        if (in.read(buf) == -1) {
+            throw new IOException("Connection closed by server");
+        }
+        Response response = SerializationUtils.deserialize(buf);
+        console.writeln(response.getMessage());
+    }
 
     protected void reconnect() throws IOException {
         close();
         init();
-        if (isConnected){
+        if (isConnected) {
             console.writeln("Client was reconnected to the server");
         } else {
             console.writeln("Connection failed");
         }
     }
+
     @Override
     public void close() throws IOException {
-        try {
-            if (socket!= null && !socket.isClosed()) {
-                isConnected = false;
-                out.close();
-                in.close();
-                socket.close();
-                console.writeln("Connection was closed");
-            }
-        } catch (IOException e){
-            throw e;
+        if (socket != null && !socket.isClosed()) {
+            isConnected = false;
+            out.close();
+            in.close();
+            socket.close();
+            console.writeln("Connection was closed");
         }
     }
-
 }

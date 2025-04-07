@@ -7,7 +7,7 @@ import se.ifmo.server.collectionManagement.CollectionManager;
 import java.io.IOException;
 
 /**
- * The {@link InsertCommand} class represents a command that allows the user to insert a dragon into the collection
+ * The {@link InsertCommand} class represents a commandName that allows the user to insert a dragon into the collection
  * with a specified ID.
  * The user is prompted to enter a unique ID for the new dragon, and if the ID is valid and unique,
  * the dragon is added to the collection.
@@ -16,7 +16,7 @@ public class InsertCommand extends Command {
 
     /**
      * Constructs an {@link InsertCommand}.
-     * Initializes the command with the name "insert", the description "add element with your key",
+     * Initializes the commandName with the name "insert", the description "add element with your key",
      * and requires 1 element (a dragon) to be added.
      */
     public InsertCommand() {
@@ -24,7 +24,7 @@ public class InsertCommand extends Command {
     }
 
     /**
-     * Executes the "insert" command. This command prompts the user to enter an ID for the new dragon
+     * Executes the "insert" commandName. This commandName prompts the user to enter an ID for the new dragon
      * and inserts the dragon into the collection if the ID is valid and not already in use.
      *
      * @param request the request containing the dragon to be inserted
@@ -33,7 +33,7 @@ public class InsertCommand extends Command {
      * @throws IOException if an I/O error occurs during the interaction with the console
      */
     @Override
-    public Response execute(Request request) throws IOException {
+    public Response execute(Request request)  {
         // If there are no dragons in the request, return a message indicating the absence of dragons
         if (request.dragons() == null || request.dragons().isEmpty()) {
             return new Response("No dragons to add");
