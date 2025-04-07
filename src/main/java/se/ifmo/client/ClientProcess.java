@@ -27,7 +27,7 @@ public class ClientProcess {
         while (true) {
             try {
                 if (readCommandName().toLowerCase().startsWith("execute_script")) {
-                    executeScript(readCommandName());
+                    (new ScriptHandler()).handleInput(readCommandName());
                 }
                 client.sendRequest(createRequest(readCommandName()));
                 client.receiveResponse();
@@ -42,32 +42,13 @@ public class ClientProcess {
             }
         }
     }
-    private void executeScript(String input) {
-        String[] parts = input.split("\\s+", 2);
-        if (parts.length < 2) {
-            console.writeln("No script file specified.");
-            return;
-        }
-        String scriptPath = parts[1];
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(scriptPath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-                Request request = createRequest(line);
-                client.sendRequest(request);
-                client.receiveResponse();
-            }
-        } catch (IOException e) {
-            console.writeln("Error reading script file: " + e.getMessage());
-        }
-    }
+
     public Request createRequest(String input) {
         if (input.equalsIgnoreCase("exit")) {
             console.writeln("Exiting");
             System.exit(0);
         }
-
         String[] parts = input.split("\\s+", 2);
         String commandName = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
@@ -93,4 +74,27 @@ public class ClientProcess {
         return console.read().trim();
     }
 
+    class ScriptHandler{
+        private void handleInput(String input) {
+            String[] parts = input.split("\\s+", 2);
+            if (parts.length < 2) {
+                console.writeln("No script file specified.");
+                return;
+            }
+            String scriptPath = parts[1];
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(scriptPath))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.trim().isEmpty()) continue;
+                    Request request = createRequest(line);
+                    client.sendRequest(request);
+                    client.receiveResponse();
+                }
+            } catch (IOException e) {
+                console.writeln("Error reading script file: " + e.getMessage());
+            }
+        }
+    }
 }
+

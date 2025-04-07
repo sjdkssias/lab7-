@@ -23,7 +23,6 @@ public class AllCommands {
             new FilterGreaterThanHeadCommand(),
             new HistoryCommand(),
             new InsertCommand(),
-            new SaveCommand(),
             new ClearCommand(),
             new MaxByIdCommand(),
             new RemoveKeyCommand(),

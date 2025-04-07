@@ -1,6 +1,8 @@
 package se.ifmo.server.collectionManagement;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import se.ifmo.server.file.handlers.XmlHandler;
 import se.ifmo.server.models.classes.Dragon;
@@ -113,6 +115,13 @@ public class CollectionManager {
         dragons.remove(id);
     }
 
+
+
+    public void sortDragons() {
+        dragons.values().stream()
+                .sorted(Comparator.comparing(Dragon::getName))
+                .collect(Collectors.toList());
+    }
     /**
      * Adds a new dragon to the collection with a generated unique ID.
      *

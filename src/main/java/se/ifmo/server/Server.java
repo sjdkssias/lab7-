@@ -109,21 +109,28 @@ public class Server implements AutoCloseable {
 
     private void closeConnection(SelectionKey key) {
         try {
+            save();
             key.channel().close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         key.cancel();
+
+    }
+
+    private void save(){
+        CollectionManager.getInstance().save();
+        console.writeln("Collection was saved to the file");
     }
 
     @Override
     public void close() throws IOException {
+        save();
         if (selector != null) {
             selector.close();
         }
         if (serverSocketChannel != null) {
             serverSocketChannel.close();
         }
-        CollectionManager.getInstance().save();
     }
 }

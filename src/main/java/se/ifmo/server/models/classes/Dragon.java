@@ -20,6 +20,7 @@ public class Dragon implements Comparable<Dragon>, Validatable, Serializable {
      * This field is ignored during JSON serialization.
      */
     @JsonIgnore
+    @Getter
     private long id;
 
     /**

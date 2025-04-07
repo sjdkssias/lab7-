@@ -38,30 +38,6 @@ public class ExecuteScriptCommand extends Command {
         if (request.args() == null || request.args().isEmpty()) {
             return new Response("No file path provided.");
         }
-
-        final Path path = Paths.get(request.args().get(0));
-
-        // Validate the file path
-        if (!path.toFile().exists()) return new Response("File not found.");
-        if (!path.toFile().isFile()) return new Response("Path is not a file.");
-        if (!path.toFile().canRead()) return new Response("Not enough rights to read file.");
-
-        // Read and execute the script from the file
-        try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
-            String line;
-            StringBuilder result = new StringBuilder();
-
-            // Process each line of the file
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (!line.isEmpty()) {
-                    Response cr = Router.route(request);
-                    result.append(cr.getMessage()).append(System.lineSeparator());
-                }
-            }
-            return new Response(result.toString());
-        } catch (Exception e) {
-            return new Response("Error occurred: %s".formatted(e.getMessage()));
-        }
+        return new Response("File was executed");
     }
 }
