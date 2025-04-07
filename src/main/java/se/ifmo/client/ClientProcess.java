@@ -29,9 +29,7 @@ public class ClientProcess {
                 if (readCommandName().toLowerCase().startsWith("execute_script")) {
                     executeScript(readCommandName());
                 }
-                Request request = createRequest(readCommandName());
-
-                client.sendRequest(request);
+                client.sendRequest(createRequest(readCommandName()));
                 client.receiveResponse();
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
