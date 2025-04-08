@@ -9,7 +9,9 @@ import se.ifmo.server.models.classes.Dragon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static se.ifmo.client.commands.AllCommands.ALLCOMANDS;
 
@@ -118,6 +120,10 @@ public class ClientProcess {
      * Processes each non-empty line in the script file as a separate command.
      */
     class ScriptHandler {
+        private final Set<String> executingScripts = new HashSet<>();
+        private final int maxRecursionDepth = 20;
+        private int currentDepth = 0;
+
         /**
          * Processes script file execution.
          *
@@ -130,7 +136,12 @@ public class ClientProcess {
                 return;
             }
             String scriptPath = parts[1];
-
+            if (currentDepth >= maxRecursionDepth) {
+                console.writeln("Maximum recursion depth (" + maxRecursionDepth + ") exceeded.");
+                return;
+            }
+            executingScripts.add(scriptPath);
+            currentDepth++;
             try (BufferedReader reader = new BufferedReader(new FileReader(scriptPath))) {
                 reader.lines()
                         .filter(line -> !line.trim().isEmpty())
