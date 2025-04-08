@@ -13,26 +13,46 @@ import java.util.List;
 
 import static se.ifmo.client.commands.AllCommands.ALLCOMANDS;
 
-
+/**
+ * Handles client-side command processing and script execution.
+ * Manages the main interaction loop between the client and server,
+ * including command parsing, request creation, and script handling.
+ */
 public class ClientProcess {
 
+    /** Console interface for user I/O operations. */
     private Console console;
+
+    /** Client instance for server communication. */
     private Client client;
 
+    /**
+     * Constructs a ClientProcess with the specified console and client.
+     *
+     * @param console the console used for input/output operations
+     * @param client the client instance handling server communication
+     */
     public ClientProcess(Console console, Client client) {
         this.console = console;
         this.client = client;
     }
 
+    /**
+     * Starts the main processing loop for handling user commands.
+     * Continuously reads input, processes commands, and manages server communication.
+     * Handles script execution for commands starting with "execute_script".
+     * Automatically attempts reconnection on communication failures.
+     */
     protected void startProcess() {
         while (true) {
             try {
-                if (readCommandName().startsWith(("exexute_script"))) {
-                    (new ScriptHandler()).handleInput(readCommandName());
-                } else {
-                    client.sendRequest(createRequest(readCommandName()));
-                    client.receiveResponse();
+                String inputLine = readCommandWithArgs();
+                if (inputLine.startsWith((new ExecuteScriptCommand()).getName())) {
+                    (new ScriptHandler()).handleInput(inputLine);
                 }
+                client.sendRequest(createRequest(inputLine));
+                client.receiveResponse();
+
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {
@@ -45,7 +65,14 @@ public class ClientProcess {
         }
     }
 
-
+    /**
+     * Creates a Request object from user input.
+     * Handles special "exit" command to terminate the application.
+     * For commands requiring Dragon objects, prompts user for additional input.
+     *
+     * @param input the raw command input string
+     * @return Request object containing command details, or null if interrupted
+     */
     public Request createRequest(String input) {
         if (input.equalsIgnoreCase("exit")) {
             console.writeln("Exiting");
@@ -65,18 +92,37 @@ public class ClientProcess {
         return new Request(commandName, List.of(arguments), dragons);
     }
 
-
+    /**
+     * Checks if a command requires Dragon objects as additional input.
+     *
+     * @param commandName the name of the command to check
+     * @return true if the command requires Dragon objects, false otherwise
+     */
     private boolean requiresDragons(String commandName) {
         return ALLCOMANDS.stream()
                 .anyMatch(temp -> temp.getName().equals(commandName)
                         && temp.getElementNumber() != 0);
     }
 
-    private String readCommandName() {
+    /**
+     * Reads a command with arguments from the console.
+     *
+     * @return trimmed input string from the console
+     */
+    private String readCommandWithArgs() {
         return console.read().trim();
     }
 
-    class ScriptHandler{
+    /**
+     * Handles execution of script files containing multiple commands.
+     * Processes each non-empty line in the script file as a separate command.
+     */
+    class ScriptHandler {
+        /**
+         * Processes script file execution.
+         *
+         * @param input the full input string containing the script command and path
+         */
         private void handleInput(String input) {
             String[] parts = input.split("\\s+", 2);
             if (parts.length < 2) {
@@ -86,17 +132,20 @@ public class ClientProcess {
             String scriptPath = parts[1];
 
             try (BufferedReader reader = new BufferedReader(new FileReader(scriptPath))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.trim().isEmpty()) continue;
-                    Request request = createRequest(line);
-                    client.sendRequest(request);
-                    client.receiveResponse();
-                }
+                reader.lines()
+                        .filter(line -> !line.trim().isEmpty())
+                        .forEach(line -> {
+                            try {
+                                client.sendRequest(createRequest(line));
+                                client.receiveResponse();
+                            } catch (IOException e) {
+                                console.writeln("Error handling line: " + e.getMessage());
+                            }
+                        });
+
             } catch (IOException e) {
                 console.writeln("Error reading script file: " + e.getMessage());
             }
         }
     }
 }
-

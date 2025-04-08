@@ -15,20 +15,44 @@ import java.nio.channels.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import org.apache.logging.log4j.LogManager;
+
+/**
+ * A NIO-based server implementation that handles client connections and requests.
+ * Implements {@link AutoCloseable} for proper resource management.
+ * Uses a selector pattern to handle multiple connections efficiently.
+ */
 public class Server implements AutoCloseable {
+    /** Default server port number. */
     private static final int PORT = 8080;
+    /** Buffer size for network operations. */
     private static final int BUFFER_SIZE = 1500;
+    /** Logger instance for server operations. */
     private static Logger logger = LogManager.getLogger(Server.class);
+    /** Selector for managing multiple channels. */
     private Selector selector;
+    /** Server socket channel for accepting connections. */
     private ServerSocketChannel serverSocketChannel;
+    /** Console interface for server output. */
     private Console console;
+    /** Buffer for temporary data storage. */
     private ByteBuffer buf;
 
+    /**
+     * Constructs a new server instance with the specified console.
+     * Automatically starts the server upon construction.
+     *
+     * @param console the console interface for server output
+     */
     public Server(Console console) {
         this.console = console;
         start();
     }
 
+    /**
+     * Initializes and starts the server.
+     * Sets up the server socket channel and selector.
+     * @throws RuntimeException if server fails to start
+     */
     private void start() {
         try {
             serverSocketChannel = ServerSocketChannel.open();
@@ -43,6 +67,12 @@ public class Server implements AutoCloseable {
         }
     }
 
+    /**
+     * Processes all ready selection keys.
+     * Handles accept, read, and write operations for connected clients.
+     *
+     * @throws IOException if an I/O error occurs during key processing
+     */
     protected void processKeys() throws IOException {
         selector.selectNow();
 
@@ -67,6 +97,12 @@ public class Server implements AutoCloseable {
         }
     }
 
+    /**
+     * Accepts a new client connection.
+     * Configures the channel as non-blocking and registers it with the selector.
+     *
+     * @throws IOException if an I/O error occurs during connection acceptance
+     */
     private void acceptConnection() throws IOException {
         SocketChannel client = serverSocketChannel.accept();
         client.configureBlocking(false);
@@ -76,7 +112,13 @@ public class Server implements AutoCloseable {
         logger.info("Connected to: " + remoteAddr);
     }
 
-
+    /**
+     * Handles read operations for a selection key.
+     * Deserializes incoming data and routes it for processing.
+     *
+     * @param key the selection key representing the client connection
+     * @throws IOException if an I/O error occurs during reading
+     */
     private void readKey(SelectionKey key) throws IOException {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
@@ -105,6 +147,13 @@ public class Server implements AutoCloseable {
         }
     }
 
+    /**
+     * Handles write operations for a selection key.
+     * Sends response data back to the client.
+     *
+     * @param key the selection key representing the client connection
+     * @throws IOException if an I/O error occurs during writing
+     */
     private void writeKey(SelectionKey key) throws IOException {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = (ByteBuffer) key.attachment();
@@ -117,6 +166,12 @@ public class Server implements AutoCloseable {
         }
     }
 
+    /**
+     * Closes a client connection and cleans up resources.
+     * Automatically saves the collection before closing.
+     *
+     * @param key the selection key representing the client connection
+     */
     private void closeConnection(SelectionKey key) {
         save();
         try {
@@ -127,14 +182,23 @@ public class Server implements AutoCloseable {
             throw new RuntimeException(e);
         }
         key.cancel();
-
     }
 
-    private void save(){
+    /**
+     * Saves the current collection state to persistent storage.
+     * Delegates to the CollectionManager's save method.
+     */
+    private void save() {
         CollectionManager.getInstance().save();
         logger.info("Collection was saved to the file");
     }
 
+    /**
+     * Closes all server resources including selector and server socket channel.
+     * Automatically saves the collection before closing.
+     *
+     * @throws IOException if an I/O error occurs during closure
+     */
     @Override
     public void close() throws IOException {
         save();

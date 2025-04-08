@@ -2,12 +2,6 @@ package se.ifmo.client.commands;
 
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
-import se.ifmo.client.chat.Router;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * The {@link ExecuteScriptCommand} class represents a command that allows the user to execute a script from a file.

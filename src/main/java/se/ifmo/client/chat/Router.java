@@ -3,8 +3,6 @@ package se.ifmo.client.chat;
 import se.ifmo.client.commands.AllCommands;
 import se.ifmo.client.commands.util.HistoryManager;
 
-import java.io.IOException;
-
 
 /**
  * The {@link Router} class is responsible for routing commands to their respective handlers.
