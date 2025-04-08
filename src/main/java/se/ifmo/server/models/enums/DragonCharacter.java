@@ -1,10 +1,12 @@
 package se.ifmo.server.models.enums;
 
+import java.io.Serializable;
+
 /**
  * Enum representing the possible characters or alignments of a dragon.
  * The characters include WISE, EVIL, CHAOTIC, CHAOTIC_EVIL, and FICKLE.
  */
-public enum DragonCharacter {
+public enum DragonCharacter implements Serializable {
 
     /**
      * Represents a wise dragon character.

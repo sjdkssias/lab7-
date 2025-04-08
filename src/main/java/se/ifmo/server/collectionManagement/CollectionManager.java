@@ -117,8 +117,8 @@ public class CollectionManager {
 
 
 
-    public void sortDragons() {
-        dragons.values().stream()
+    public List<Dragon> sortDragons() {
+        return dragons.values().stream()
                 .sorted(Comparator.comparing(Dragon::getName))
                 .collect(Collectors.toList());
     }

@@ -1,7 +1,7 @@
 package se.ifmo.server;
 
 import org.apache.commons.lang3.SerializationUtils;
-import se.ifmo.client.chat.Request;
+import org.apache.logging.log4j.Logger;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
 import se.ifmo.client.console.Console;
@@ -14,10 +14,11 @@ import java.net.SocketAddress;
 import java.nio.channels.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
-
+import org.apache.logging.log4j.LogManager;
 public class Server implements AutoCloseable {
     private static final int PORT = 8080;
     private static final int BUFFER_SIZE = 1500;
+    private static Logger logger = LogManager.getLogger(Server.class);
     private Selector selector;
     private ServerSocketChannel serverSocketChannel;
     private Console console;
@@ -35,7 +36,9 @@ public class Server implements AutoCloseable {
             serverSocketChannel.configureBlocking(false);
             selector = Selector.open();
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            logger.info("Server is starting successfully");
         } catch (IOException e) {
+            logger.fatal("Error with starting server");
             throw new RuntimeException(e);
         }
     }
@@ -48,13 +51,17 @@ public class Server implements AutoCloseable {
             SelectionKey key = selectedKeys.next();
             selectedKeys.remove();
             if (!key.isValid()) {
+                logger.warn("Invalid key encountered: {}", key);
                 continue;
             }
             if (key.isAcceptable()) {
+                logger.info("Acceptable key detected. Accepting connection...");
                 acceptConnection();
             } else if (key.isReadable()) {
+                logger.info("Readable key detected. Processing read...");
                 readKey(key);
             } else if (key.isWritable()) {
+                logger.info("Writable key detected. Processing write...");
                 writeKey(key);
             }
         }
@@ -66,7 +73,7 @@ public class Server implements AutoCloseable {
         client.register(selector, SelectionKey.OP_READ);
         Socket socket = client.socket();
         SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-        console.writeln("Connected to: " + remoteAddr);
+        logger.info("Connected to: " + remoteAddr);
     }
 
 
@@ -78,6 +85,7 @@ public class Server implements AutoCloseable {
             int bytesRead = socketChannel.read(buf);
 
             if (bytesRead == -1) {
+                logger.info("Client was disconnected");
                 closeConnection(key);
                 return;
             }
@@ -89,8 +97,10 @@ public class Server implements AutoCloseable {
                 Response response = Router.route(SerializationUtils.deserialize(data));
                 key.attach(ByteBuffer.wrap(SerializationUtils.serialize(response)));
                 key.interestOps(SelectionKey.OP_WRITE);
+                logger.debug("Read {} from client ", data);
             }
         } catch (IOException e) {
+            logger.error("Error reading from client");
             socketChannel.close();
         }
     }
@@ -108,10 +118,12 @@ public class Server implements AutoCloseable {
     }
 
     private void closeConnection(SelectionKey key) {
+        save();
         try {
-            save();
+            logger.info("Client disconnected");
             key.channel().close();
         } catch (IOException e) {
+            logger.error("Error with closing connection");
             throw new RuntimeException(e);
         }
         key.cancel();
@@ -120,7 +132,7 @@ public class Server implements AutoCloseable {
 
     private void save(){
         CollectionManager.getInstance().save();
-        console.writeln("Collection was saved to the file");
+        logger.info("Collection was saved to the file");
     }
 
     @Override
@@ -128,9 +140,11 @@ public class Server implements AutoCloseable {
         save();
         if (selector != null) {
             selector.close();
+            logger.info("Selector was closed");
         }
         if (serverSocketChannel != null) {
             serverSocketChannel.close();
+            logger.info("Channel was closed");
         }
     }
 }

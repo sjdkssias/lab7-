@@ -1,6 +1,7 @@
 package se.ifmo.client.chat;
 
 import se.ifmo.client.commands.AllCommands;
+import se.ifmo.client.commands.util.HistoryManager;
 
 import java.io.IOException;
 
@@ -16,11 +17,8 @@ public class Router {
         return AllCommands.ALLCOMANDS.stream()
                 .filter(command -> command.getName().equals(req.commandName()))
                 .findFirst().map(command -> {
-                    try {
-                        return Handler.handleCommand(command, req);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    HistoryManager.getInstance().addCommand(command.getName());
+                    return command.execute(req);
                 }).orElse(new Response("No such command"));
     }
 }

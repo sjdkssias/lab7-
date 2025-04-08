@@ -7,7 +7,6 @@ import se.ifmo.client.console.Console;
 
 import java.io.*;
 import java.net.*;
-import java.util.Arrays;
 
 
 public class Client implements AutoCloseable {

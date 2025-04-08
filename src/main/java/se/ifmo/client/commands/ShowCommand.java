@@ -42,7 +42,6 @@ public class ShowCommand extends Command {
                         .append(", ").append(dragon)
                         .append("\n")
         );
-        collectionManager.sortDragons();
         // Return the collection information as a response
         return new Response(result.toString());
     }

@@ -1,6 +1,7 @@
 package se.ifmo.client;
 
 import se.ifmo.client.chat.Request;
+import se.ifmo.client.commands.ExecuteScriptCommand;
 import se.ifmo.client.console.Console;
 import se.ifmo.client.utility.InputHandler;
 import se.ifmo.server.models.classes.Dragon;
@@ -26,11 +27,12 @@ public class ClientProcess {
     protected void startProcess() {
         while (true) {
             try {
-                if (readCommandName().toLowerCase().startsWith("execute_script")) {
+                if (readCommandName().startsWith(("exexute_script"))) {
                     (new ScriptHandler()).handleInput(readCommandName());
+                } else {
+                    client.sendRequest(createRequest(readCommandName()));
+                    client.receiveResponse();
                 }
-                client.sendRequest(createRequest(readCommandName()));
-                client.receiveResponse();
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {

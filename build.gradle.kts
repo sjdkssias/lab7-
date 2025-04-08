@@ -10,7 +10,8 @@ repositories {
 }
 
 dependencies {
-    // Добавьте Lombok
+    implementation("org.apache.logging.log4j:log4j-api:2.20.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.20.0")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
