@@ -14,6 +14,8 @@ import java.net.SocketAddress;
 import java.nio.channels.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
+import java.util.concurrent.ForkJoinPool;
+
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -21,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
  * Implements {@link AutoCloseable} for proper resource management.
  * Uses a selector pattern to handle multiple connections efficiently.
  */
-public class Server implements AutoCloseable {
+public class Server implements AutoCloseable, Runnable {
     /** Default server port number. */
     private static final int PORT = 8080;
     /** Buffer size for network operations. */
@@ -37,6 +39,11 @@ public class Server implements AutoCloseable {
     /** Buffer for temporary data storage. */
     private ByteBuffer buf;
 
+    private final ForkJoinPool readRequestPool = new ForkJoinPool();
+
+    private final ForkJoinPool sendResponsePool = new ForkJoinPool();
+
+    private final ForkJoinPool acceptConnectionPoll = new ForkJoinPool();
     /**
      * Constructs a new server instance with the specified console.
      * Automatically starts the server upon construction.
@@ -67,6 +74,16 @@ public class Server implements AutoCloseable {
         }
     }
 
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()){
+            try {
+                processKeys();
+            } catch (IOException e){
+                logger.info("Error of proseccing selection keys");
+            }
+        }
+    }
     /**
      * Processes all ready selection keys.
      * Handles accept, read, and write operations for connected clients.
@@ -85,6 +102,7 @@ public class Server implements AutoCloseable {
                 continue;
             }
             if (key.isAcceptable()) {
+
                 logger.info("Acceptable key detected. Accepting connection...");
                 acceptConnection();
             } else if (key.isReadable()) {
@@ -105,11 +123,19 @@ public class Server implements AutoCloseable {
      */
     private void acceptConnection() throws IOException {
         SocketChannel client = serverSocketChannel.accept();
-        client.configureBlocking(false);
-        client.register(selector, SelectionKey.OP_READ);
-        Socket socket = client.socket();
-        SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-        logger.info("Connected to: " + remoteAddr);
+        acceptConnectionPoll.execute(() -> {
+            try {
+                client.configureBlocking(false);
+                client.register(selector, SelectionKey.OP_READ);
+                Socket socket = client.socket();
+                SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+                logger.info("Connected to: " + remoteAddr);
+                selector.wakeup();
+            } catch (IOException e){
+                logger.error("");
+            }
+        });
+
     }
 
     /**
@@ -133,13 +159,16 @@ public class Server implements AutoCloseable {
             }
 
             if (bytesRead > 0) {
-                buf.flip();
-                byte[] data = new byte[buf.remaining()];
-                buf.get(data).clear();
-                Response response = Router.route(SerializationUtils.deserialize(data));
-                key.attach(ByteBuffer.wrap(SerializationUtils.serialize(response)));
-                key.interestOps(SelectionKey.OP_WRITE);
-                logger.debug("Read {} from client ", data);
+                readRequestPool.execute(() -> {
+                    buf.flip();
+                    byte[] data = new byte[buf.remaining()];
+                    buf.get(data).clear();
+                    Response response = Router.route(SerializationUtils.deserialize(data));
+                    key.attach(ByteBuffer.wrap(SerializationUtils.serialize(response)));
+                    key.interestOps(SelectionKey.OP_WRITE);
+                    logger.debug("Read {} from client ", data);
+                    selector.wakeup();
+                });
             }
         } catch (IOException e) {
             logger.error("Error reading from client");
@@ -154,16 +183,26 @@ public class Server implements AutoCloseable {
      * @param key the selection key representing the client connection
      * @throws IOException if an I/O error occurs during writing
      */
-    private void writeKey(SelectionKey key) throws IOException {
+    private void writeKey(SelectionKey key) {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = (ByteBuffer) key.attachment();
-        socketChannel.write(buf);
 
-        if (!buf.hasRemaining()) {
-            buf.clear();
-            key.attach(ByteBuffer.allocate(BUFFER_SIZE));
-            key.interestOps(SelectionKey.OP_READ);
-        }
+        sendResponsePool.execute(() -> {
+            try {
+                socketChannel.write(buf);
+
+                if (!buf.hasRemaining()) {
+                    buf.clear();
+                    key.attach(ByteBuffer.allocate(BUFFER_SIZE));
+                    key.interestOps(SelectionKey.OP_READ);
+                    selector.wakeup();
+                }
+            } catch (IOException e){
+                logger.error("");
+                closeConnection(key);
+            }
+        });
+
     }
 
     /**
@@ -202,6 +241,9 @@ public class Server implements AutoCloseable {
     @Override
     public void close() throws IOException {
         save();
+        acceptConnectionPoll.shutdown();
+        readRequestPool.shutdown();
+        sendResponsePool.shutdown();
         if (selector != null) {
             selector.close();
             logger.info("Selector was closed");
