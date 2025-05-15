@@ -13,7 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DragonService implements DragonI{
+    private DragonService instance;
 
+
+    public DragonService getInctance(){
+        return instance == null ? instance = new DragonService() : instance;
+    }
 
     @Override
     public List<Dragon> findAll() throws SQLException {
@@ -32,10 +37,10 @@ public class DragonService implements DragonI{
     {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.FIND_BY_ID))
             {
-            stmt.setLong(1, id); // ✅ Вставляем параметр
+            stmt.setLong(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return dragonMap(rs); // ✅ Вынесено в отдельный метод
+                    return dragonMap(rs); 
                 }
             }
 
