@@ -52,22 +52,7 @@ public class CollectionManager {
         }
         return instance;
     }
-
-    /**
-     * Generates a unique ID for a new dragon.
-     * The ID is generated randomly and ensures it is unique by checking if it already exists in the collection.
-     *
-     * @return a unique long ID for a dragon.
-     */
-    public long generateId() {
-        Random random = new Random();
-        long newId;
-        do {
-            newId = random.nextLong();
-        } while (dragons.containsKey(newId)); // Keep generating until a unique ID is found.
-        return newId;
-    }
-
+    
 
     public boolean load() {
         try {
@@ -119,7 +104,7 @@ public class CollectionManager {
             long generatedId = DragonService.getInctance().addDragon(dragon);
             if (generatedId != -1) {
                 dragon.setId(generatedId);
-                dragons.put(generatedId, dragon); 
+                dragons.put(generatedId, dragon);
                 return true;
             }
         } catch (SQLException e) {
