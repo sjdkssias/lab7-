@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DragonService implements DragonI{
-    private DragonService instance;
+    private static DragonService instance;
 
 
-    public DragonService getInctance(){
+    public static DragonService getInctance(){
         return instance == null ? instance = new DragonService() : instance;
     }
 
@@ -40,7 +40,7 @@ public class DragonService implements DragonI{
             stmt.setLong(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return dragonMap(rs); 
+                    return dragonMap(rs);
                 }
             }
 
@@ -49,10 +49,25 @@ public class DragonService implements DragonI{
     }
 
     @Override
-    public boolean saveDragon(Dragon dragon) throws SQLException{
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.SAVE_DRAGON)){
-            return true;
+    public long addDragon(Dragon dragon) throws SQLException{
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.ADD_DRAGON)){
+            stmt.setLong(1, dragon.getId());
+            stmt.setString(2, dragon.getName());
+            stmt.setFloat(3, dragon.getCoordinates().getX());
+            stmt.setLong(4, dragon.getCoordinates().getY());
+            stmt.setBoolean(5, dragon.isSpeaking());
+            stmt.setString(6, dragon.getColor().name());
+            stmt.setString(7, dragon.getCharacter().name());
+            stmt.setFloat(8, dragon.getHead().getToothcount());
+            try (ResultSet dragonRes = stmt.executeQuery()) {
+                if (dragonRes.next()) {
+                    long id = dragonRes.getLong("id");
+                    dragon.setId(id);
+                    return id;
+                }
+            }
         }
+        return -1;
     }
 
     @Override

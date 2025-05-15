@@ -229,7 +229,7 @@ public class Server implements AutoCloseable, Runnable {
      */
     private void save() {
         CollectionManager.getInstance().save();
-        logger.info("Collection was saved to the file");
+        logger.info("Dragon was saved to the database");
     }
 
     /**

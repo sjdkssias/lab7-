@@ -1,10 +1,15 @@
 package se.ifmo.server.collectionManagement;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import se.ifmo.server.file.handlers.XmlHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import se.ifmo.server.Server;
+import se.ifmo.server.database.DragonService;
+
 import se.ifmo.server.models.classes.Dragon;
 
 /**
@@ -15,7 +20,7 @@ import se.ifmo.server.models.classes.Dragon;
  */
 @Getter
 public class CollectionManager {
-
+    private static Logger logger = LogManager.getLogger(CollectionManager.class);
     /**
      * The singleton instance of the {@link CollectionManager}.
      */
@@ -63,35 +68,17 @@ public class CollectionManager {
         return newId;
     }
 
-    /**
-     * Loads the dragon data from an XML file using the {@link XmlHandler}.
-     * Clears the existing collection and reads the new data into the  map.
-     *
-     * @return true if the data was successfully loaded, otherwise false.
-     */
-    public boolean load() {
-        try (XmlHandler xmlHandler = new XmlHandler()) {
-            dragons.clear();
-            dragons.putAll(xmlHandler.read());
-            return true;
-        } catch (NullPointerException e) {
-            System.err.println("File is clear");
-        }
-        return false;
-    }
 
-    /**
-     * Saves the current dragon collection to an XML file using the {@link XmlHandler}.
-     *
-     * @return true if the data was successfully saved, otherwise false.
-     */
-    public boolean save() {
-        try (XmlHandler xmlHandler = new XmlHandler()) {
-            xmlHandler.write(dragons);
+    public boolean load() {
+        try {
+            List<Dragon> dragonDb = DragonService.getInctance().findAll();
+            dragons.clear();
+            for (Dragon dragon : dragonDb) {
+                dragons.put(dragon.getId(), dragon);
+            }
             return true;
-        } catch (Exception e) {
-            System.err.println("Unknown error while saving: " + e.getMessage());
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("");
         }
         return false;
     }
@@ -127,10 +114,18 @@ public class CollectionManager {
      *
      * @param dragon the dragon to add to the collection.
      */
-    public void add(Dragon dragon) {
-        long k = generateId();
-        dragons.put(k, dragon);
-        dragon.setId(k);
+    public boolean add(Dragon dragon) {
+        try {
+            long generatedId = DragonService.getInctance().addDragon(dragon);
+            if (generatedId != -1) {
+                dragon.setId(generatedId);
+                dragons.put(generatedId, dragon); 
+                return true;
+            }
+        } catch (SQLException e) {
+            logger.error("Add to the database error: ", e);
+        }
+        return false;
     }
 
     /**
