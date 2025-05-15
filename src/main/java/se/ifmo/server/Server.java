@@ -212,7 +212,6 @@ public class Server implements AutoCloseable, Runnable {
      * @param key the selection key representing the client connection
      */
     private void closeConnection(SelectionKey key) {
-        save();
         try {
             logger.info("Client disconnected");
             key.channel().close();
@@ -227,10 +226,6 @@ public class Server implements AutoCloseable, Runnable {
      * Saves the current collection state to persistent storage.
      * Delegates to the CollectionManager's save method.
      */
-    private void save() {
-        CollectionManager.getInstance().save();
-        logger.info("Dragon was saved to the database");
-    }
 
     /**
      * Closes all server resources including selector and server socket channel.
@@ -240,7 +235,6 @@ public class Server implements AutoCloseable, Runnable {
      */
     @Override
     public void close() throws IOException {
-        save();
         acceptConnectionPoll.shutdown();
         readRequestPool.shutdown();
         sendResponsePool.shutdown();

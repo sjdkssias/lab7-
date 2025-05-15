@@ -12,12 +12,7 @@ import se.ifmo.server.database.DragonService;
 
 import se.ifmo.server.models.classes.Dragon;
 
-/**
- * Manages a collection of dragons stored in a {@link TreeMap} and handles operations
- * such as adding, removing, saving, and loading dragons.
- * The collection is uniquely identified by dragon IDs, which are generated using {@link #generateId()}.
- * This class follows the Singleton pattern, ensuring that only one instance of the collection manager exists.
- */
+
 @Getter
 public class CollectionManager {
     private static Logger logger = LogManager.getLogger(CollectionManager.class);
@@ -52,7 +47,7 @@ public class CollectionManager {
         }
         return instance;
     }
-    
+
 
     public boolean load() {
         try {
@@ -83,8 +78,14 @@ public class CollectionManager {
      *
      * @param id the ID of the dragon to remove.
      */
-    public void removeById(long id) {
-        dragons.remove(id);
+    public synchronized void removeById(long id) {
+        try {
+            if (DragonService.getInctance().removeById(id)){
+                dragons.remove(id);
+            }
+        } catch (SQLException e){
+            logger.error("nafine соси хуяку");
+        }
     }
 
 
@@ -99,7 +100,7 @@ public class CollectionManager {
      *
      * @param dragon the dragon to add to the collection.
      */
-    public boolean add(Dragon dragon) {
+    public synchronized boolean add(Dragon dragon) {
         try {
             long generatedId = DragonService.getInctance().addDragon(dragon);
             if (generatedId != -1) {

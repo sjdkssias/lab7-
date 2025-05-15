@@ -51,14 +51,13 @@ public class DragonService implements DragonI{
     @Override
     public long addDragon(Dragon dragon) throws SQLException{
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.ADD_DRAGON)){
-            stmt.setLong(1, dragon.getId());
-            stmt.setString(2, dragon.getName());
-            stmt.setFloat(3, dragon.getCoordinates().getX());
-            stmt.setLong(4, dragon.getCoordinates().getY());
-            stmt.setBoolean(5, dragon.isSpeaking());
-            stmt.setString(6, dragon.getColor().name());
-            stmt.setString(7, dragon.getCharacter().name());
-            stmt.setFloat(8, dragon.getHead().getToothcount());
+            stmt.setString(1, dragon.getName());
+            stmt.setFloat(2, dragon.getCoordinates().getX());
+            stmt.setLong(3, dragon.getCoordinates().getY());
+            stmt.setBoolean(4, dragon.isSpeaking());
+            stmt.setString(5, dragon.getColor().name());
+            stmt.setString(6, dragon.getCharacter().name());
+            stmt.setFloat(7, dragon.getHead().getToothcount());
             try (ResultSet dragonRes = stmt.executeQuery()) {
                 if (dragonRes.next()) {
                     long id = dragonRes.getLong("id");
@@ -71,17 +70,17 @@ public class DragonService implements DragonI{
     }
 
     @Override
-    public void removeById(long id) throws SQLException{
+    public boolean removeById(long id) throws SQLException{
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.REMOVE_DRAGON_BY_ID)){
             stmt.setLong(1, id);
-            stmt.executeQuery();
+            return stmt.executeUpdate() > 0;
         }
     }
 
     @Override
-    public long removeUsersDragons(long id) throws SQLException {
+    public long removeUsersDragons(long uid) throws SQLException {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.REMOVE_USERS_DRAGON)){
-            stmt.setLong(1, id);
+            stmt.setLong(1, uid);
             return stmt.executeUpdate();
         }
     }
