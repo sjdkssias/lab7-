@@ -17,5 +17,6 @@ public class DragonHead implements Serializable {
      * The number of teeth in the dragon's head.
      * This field is a floating-point number.
      */
+    @Getter
     private float toothcount;
 }
