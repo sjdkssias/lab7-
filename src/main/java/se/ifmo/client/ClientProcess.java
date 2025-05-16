@@ -2,6 +2,8 @@ package se.ifmo.client;
 
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.commands.ExecuteScriptCommand;
+import se.ifmo.client.commands.LoginCommand;
+import se.ifmo.client.commands.RegisterCommand;
 import se.ifmo.client.console.Console;
 import se.ifmo.client.utility.InputHandler;
 import se.ifmo.server.models.classes.Dragon;
@@ -9,9 +11,7 @@ import se.ifmo.server.models.classes.Dragon;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static se.ifmo.client.commands.AllCommands.ALLCOMANDS;
 
@@ -76,23 +76,33 @@ public class ClientProcess {
      * @return Request object containing command details, or null if interrupted
      */
     public Request createRequest(String input) {
+
         if (input.equalsIgnoreCase("exit")) {
             console.writeln("Exiting");
             System.exit(0);
         }
-        String[] parts = input.split("\\s+", 2);
+
+        String[] parts = input.split("\\s+", 3);
         String commandName = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
         List<Dragon> dragons = null;
+        if (commandName.equals(new RegisterCommand().getName()) || commandName.equals(new LoginCommand().getName())) {
+            if (parts.length < 3) {
+                return new Request(commandName, List.of(parts.length > 1 ? parts[1] : ""), null);
+            }
+            return new Request(commandName, List.of(parts[1], parts[2]), null);
+        }
 
         try {
             if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(console));
         } catch (InterruptedException e) {
+            console.writeln("хуйня ебаная на строке 100 в клиенте");
             return null;
         }
-
+        console.writeln("ошибка где то тут ебучая");
         return new Request(commandName, List.of(arguments), dragons);
     }
+
 
     /**
      * Checks if a command requires Dragon objects as additional input.

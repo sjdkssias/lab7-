@@ -100,7 +100,7 @@ public class CollectionManager {
      *
      * @param dragon the dragon to add to the collection.
      */
-    public synchronized boolean add(Dragon dragon) {
+    public boolean add(Dragon dragon) {
         try {
             long generatedId = DragonService.getInctance().addDragon(dragon);
             if (generatedId != -1) {

@@ -31,6 +31,8 @@ public enum DragonCharacter implements Serializable {
     /**
      * Represents a fickle dragon character.
      */
-    FICKLE
+    FICKLE,
+
+    UNKNOWN
 }
 

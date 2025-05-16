@@ -1,7 +1,9 @@
 package se.ifmo.server;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+//могу похлопать ???? че случилось
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
 import se.ifmo.client.console.Console;
@@ -25,11 +27,11 @@ import org.apache.logging.log4j.LogManager;
  */
 public class Server implements AutoCloseable, Runnable {
     /** Default server port number. */
-    private static final int PORT = 8080;
+    private static final int PORT = Integer.parseInt(System.getenv("SERVER_PORT"));
     /** Buffer size for network operations. */
     private static final int BUFFER_SIZE = 1500;
     /** Logger instance for server operations. */
-    private static Logger logger = LogManager.getLogger(Server.class);
+    public static Logger logger = LogManager.getLogger(Server.class);
     /** Selector for managing multiple channels. */
     private Selector selector;
     /** Server socket channel for accepting connections. */
@@ -39,11 +41,6 @@ public class Server implements AutoCloseable, Runnable {
     /** Buffer for temporary data storage. */
     private ByteBuffer buf;
 
-    private final ForkJoinPool readRequestPool = new ForkJoinPool();
-
-    private final ForkJoinPool sendResponsePool = new ForkJoinPool();
-
-    private final ForkJoinPool acceptConnectionPoll = new ForkJoinPool();
     /**
      * Constructs a new server instance with the specified console.
      * Automatically starts the server upon construction.
@@ -68,8 +65,9 @@ public class Server implements AutoCloseable, Runnable {
             selector = Selector.open();
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             logger.info("Server is starting successfully");
+            console.writeln("Server is listening in port " + PORT);
         } catch (IOException e) {
-            logger.fatal("Error with starting server");
+            logger.log(Level.FATAL, "Failed to launch server", e);
             throw new RuntimeException(e);
         }
     }
@@ -123,18 +121,17 @@ public class Server implements AutoCloseable, Runnable {
      */
     private void acceptConnection() throws IOException {
         SocketChannel client = serverSocketChannel.accept();
-        acceptConnectionPoll.execute(() -> {
-            try {
-                client.configureBlocking(false);
-                client.register(selector, SelectionKey.OP_READ);
-                Socket socket = client.socket();
-                SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-                logger.info("Connected to: " + remoteAddr);
-                selector.wakeup();
-            } catch (IOException e){
-                logger.error("");
-            }
-        });
+        try {
+            client.configureBlocking(false);
+            client.register(selector, SelectionKey.OP_READ);
+            Socket socket = client.socket();
+            SocketAddress remoteAddr = socket.getRemoteSocketAddress();
+            logger.info("Connected to: " + remoteAddr);
+            selector.wakeup();
+        } catch (IOException e){
+            logger.error("");
+        }
+
 
     }
 
@@ -146,6 +143,7 @@ public class Server implements AutoCloseable, Runnable {
      * @throws IOException if an I/O error occurs during reading
      */
     private void readKey(SelectionKey key) throws IOException {
+        if (!key.isValid()) return;
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
 
@@ -159,16 +157,23 @@ public class Server implements AutoCloseable, Runnable {
             }
 
             if (bytesRead > 0) {
-                readRequestPool.execute(() -> {
+                try {
                     buf.flip();
                     byte[] data = new byte[buf.remaining()];
                     buf.get(data).clear();
                     Response response = Router.route(SerializationUtils.deserialize(data));
-                    key.attach(ByteBuffer.wrap(SerializationUtils.serialize(response)));
-                    key.interestOps(SelectionKey.OP_WRITE);
-                    logger.debug("Read {} from client ", data);
-                    selector.wakeup();
-                });
+
+                    synchronized (key) {
+                        if (key.isValid()) {
+                            key.attach(ByteBuffer.wrap(SerializationUtils.serialize(response)));
+                            key.interestOps(SelectionKey.OP_WRITE);
+                            selector.wakeup();
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Error processing request", e);
+                    closeConnection(key);
+                }
             }
         } catch (IOException e) {
             logger.error("Error reading from client");
@@ -187,21 +192,19 @@ public class Server implements AutoCloseable, Runnable {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = (ByteBuffer) key.attachment();
 
-        sendResponsePool.execute(() -> {
-            try {
-                socketChannel.write(buf);
+        try {
+            socketChannel.write(buf);
 
-                if (!buf.hasRemaining()) {
-                    buf.clear();
-                    key.attach(ByteBuffer.allocate(BUFFER_SIZE));
-                    key.interestOps(SelectionKey.OP_READ);
-                    selector.wakeup();
-                }
-            } catch (IOException e){
-                logger.error("");
-                closeConnection(key);
+            if (!buf.hasRemaining()) {
+                buf.clear();
+                key.attach(ByteBuffer.allocate(BUFFER_SIZE));
+                key.interestOps(SelectionKey.OP_READ);
+                selector.wakeup();
             }
-        });
+        } catch (IOException e){
+            logger.error("");
+            closeConnection(key);
+        }
 
     }
 
@@ -235,9 +238,6 @@ public class Server implements AutoCloseable, Runnable {
      */
     @Override
     public void close() throws IOException {
-        acceptConnectionPoll.shutdown();
-        readRequestPool.shutdown();
-        sendResponsePool.shutdown();
         if (selector != null) {
             selector.close();
             logger.info("Selector was closed");

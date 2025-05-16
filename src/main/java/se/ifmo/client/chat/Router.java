@@ -16,6 +16,7 @@ public class Router {
                 .filter(command -> command.getName().equals(req.commandName()))
                 .findFirst().map(command -> {
                     HistoryManager.getInstance().addCommand(command.getName());
+                    System.out.println(req);
                     return command.execute(req);
                 }).orElse(new Response("No such command"));
     }

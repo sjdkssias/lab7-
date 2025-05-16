@@ -56,13 +56,17 @@ public class DragonService implements DragonI{
             stmt.setLong(3, dragon.getCoordinates().getY());
             stmt.setBoolean(4, dragon.isSpeaking());
             stmt.setString(5, dragon.getColor().name());
-            stmt.setString(6, dragon.getCharacter().name());
+            if (dragon.getCharacter() != null) {
+                stmt.setString(6, dragon.getCharacter().name());
+            } else {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            }
             stmt.setFloat(7, dragon.getHead().getToothcount());
-            try (ResultSet dragonRes = stmt.executeQuery()) {
-                if (dragonRes.next()) {
-                    long id = dragonRes.getLong("id");
-                    dragon.setId(id);
-                    return id;
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
                 }
             }
         }
@@ -92,9 +96,14 @@ public class DragonService implements DragonI{
         dragon.setCoordinates(new Coordinates(dragonResult.getFloat("x"), dragonResult.getLong("y")));
         dragon.setSpeaking(dragonResult.getBoolean("speaking"));
         dragon.setColor(Color.valueOf(dragonResult.getString("color")));
-        dragon.setCharacter(DragonCharacter.valueOf(dragonResult.getString("character")));
+        if (dragonResult.getString("character") != null && !dragonResult.getString("character").isEmpty()) {
+            try {
+                dragon.setCharacter(DragonCharacter.valueOf(dragonResult.getString("character")));
+            } catch (IllegalArgumentException e) {
+                dragon.setCharacter(DragonCharacter.UNKNOWN);
+            }
+        }
         dragon.setHead(new DragonHead(dragonResult.getFloat("toothcount")));
-        dragon.setOwner_id(dragonResult.getLong("owner_id"));
         return dragon;
     }
 }

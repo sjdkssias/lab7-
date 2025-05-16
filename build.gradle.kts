@@ -3,14 +3,13 @@ plugins {
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.postgresql:postgresql:42.7.2")
+    implementation("org.postgresql:postgresql:42.7.5")
     implementation("org.apache.logging.log4j:log4j-api:2.20.0")
     implementation("org.apache.logging.log4j:log4j-core:2.20.0")
     implementation("org.apache.commons:commons-lang3:3.12.0")
@@ -23,8 +22,20 @@ dependencies {
     implementation("io.vertx:vertx-core:4.5.3")
 }
 
+tasks.compileJava {
+    options.release.set(21)
+}
 
+tasks.register<Jar>("serverFatJar") {
 
-tasks.test {
-    useJUnitPlatform()
+    archiveClassifier.set("server")
+    manifest {
+        attributes["Main-Class"] = "se.ifmo.server.ServerMain"
+    }
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

@@ -71,8 +71,7 @@ public class Dragon implements Comparable<Dragon>, Validatable, Serializable {
     @NonNull
     private DragonHead head;
 
-    @NonNull
-    private long owner_id;
+
 
     /**
      * Compares this dragon with another dragon by their IDs.

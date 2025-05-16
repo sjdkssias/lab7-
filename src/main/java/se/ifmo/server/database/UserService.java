@@ -35,12 +35,13 @@ public class UserService implements UserI{
     }
 
     @Override
-    public void register(String name, String password) throws SQLException {
+    public boolean register(String name, String password) throws SQLException {
+        if (findByName(name) != null) return false;
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.REGISTER)){
             stmt.setString(1, name);
-            stmt.setString(2, password);
-
-            stmt.executeQuery();
+            stmt.setString(2, hashPassword(password));
+            stmt.executeUpdate();
+            return true;
         }
     }
 
@@ -50,6 +51,8 @@ public class UserService implements UserI{
             stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()){
                 if (result.next()){
+                    System.out.println(result.getString("password"));
+                    System.out.println(hashPassword(password));
                     return result.getString("password").equals(hashPassword(password));
                 }
                 return false;
@@ -71,7 +74,7 @@ public class UserService implements UserI{
 
     @Override
     public User findByName(String name) throws SQLException {
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_ID)){
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_NAME)){
             stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()) {
                 if (result.next()) {

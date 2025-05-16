@@ -13,10 +13,11 @@ import java.net.*;
  * Implements {@link AutoCloseable} to ensure proper resource cleanup.
  */
 public class Client implements AutoCloseable {
+
     /** Default server hostname. */
-    private static final String HOST = "localhost";
+    private static final String HOST = "192.168.10.80";
     /** Default server port. */
-    private static final int PORT = 8080;
+    private static final int PORT = 8345;
 
     /** Socket connection to the server. */
     private Socket socket;
@@ -50,6 +51,7 @@ public class Client implements AutoCloseable {
             out = socket.getOutputStream();
             in = socket.getInputStream();
             isConnected = true;
+            console.writeln("Successfully connected");
         } catch (UnknownHostException e) {
             console.writeln("Unknown host to connect: " + e.getMessage());
             isConnected = false;
@@ -67,6 +69,7 @@ public class Client implements AutoCloseable {
      */
     public void start() throws IOException, InterruptedException {
         while (!isConnected) {
+            console.writeln("Connecting to the server...");
             reconnect();
             Thread.sleep(1000);
         }

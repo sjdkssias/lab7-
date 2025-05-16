@@ -7,8 +7,6 @@ public class ServerMain {
         try (Console console = new Console();
              Server server = new Server(console)) {
 
-            console.writeln("Server is running...");
-
             while (true) {
                 server.processKeys();
             }
