@@ -15,7 +15,6 @@ import se.ifmo.server.models.classes.Dragon;
 
 @Getter
 public class CollectionManager {
-    private static Logger logger = LogManager.getLogger(CollectionManager.class);
     /**
      * The singleton instance of the {@link CollectionManager}.
      */
@@ -58,7 +57,7 @@ public class CollectionManager {
             }
             return true;
         } catch (SQLException e) {
-            logger.error("");
+            Server.logger.error("SQL error + " + e.getMessage());
         }
         return false;
     }
@@ -84,7 +83,7 @@ public class CollectionManager {
                 dragons.remove(id);
             }
         } catch (SQLException e){
-            logger.error("nafine соси хуяку");
+            Server.logger.error("nafine соси хуяку" + e.getMessage());
         }
     }
 
@@ -109,7 +108,7 @@ public class CollectionManager {
                 return true;
             }
         } catch (SQLException e) {
-            logger.error("Add to the database error: ", e);
+            Server.logger.error("Add to the database error: " + e);
         }
         return false;
     }
