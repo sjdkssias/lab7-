@@ -94,6 +94,7 @@ public class DragonService implements DragonI{
         dragon.setColor(Color.valueOf(dragonResult.getString("color")));
         dragon.setCharacter(DragonCharacter.valueOf(dragonResult.getString("character")));
         dragon.setHead(new DragonHead(dragonResult.getFloat("toothcount")));
+        dragon.setOwner_id(dragonResult.getLong("owner_id"));
         return dragon;
     }
 }

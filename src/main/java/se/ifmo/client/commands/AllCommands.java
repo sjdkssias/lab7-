@@ -31,7 +31,9 @@ public class AllCommands {
             new RemoveLowerKeyCommand(),
             new ShowCommand(),
             new InfoCommand(),
-            new ExecuteScriptCommand()
+            new ExecuteScriptCommand(),
+            new RegisterCommand(),
+            new LoginCommand()
     );
 
     /**

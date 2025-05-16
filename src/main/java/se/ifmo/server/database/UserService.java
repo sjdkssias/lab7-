@@ -21,36 +21,58 @@ public class UserService implements UserI{
     public static UserService getInstance(){
         return instance == null ? instance = new UserService() : instance;
     }
-    @Override
-    public boolean checkPassword(User user, String password) {
-        if (password == null || user == null) return false;
-        return hashPassword(password).equals(user.getPassword());
-    }
 
     @Override
     public List<User> findAll() throws SQLException {
         List<User> users = new ArrayList<>();
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_ALL)) {
-
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_ALL);
+            ResultSet result = stmt.executeQuery()) {
+            while (result.next()){
+                users.add(mapUser(result));
+            }
             return users;
         }
     }
 
     @Override
-    public void save(String name, String password) throws SQLException {
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.SAVE)){
+    public void register(String name, String password) throws SQLException {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.REGISTER)){
             stmt.setString(1, name);
-            stmt.setString(2, hashPassword(password));
+            stmt.setString(2, password);
 
             stmt.executeQuery();
         }
     }
 
     @Override
-    public User findById(long id) throws SQLException {
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_ID)){
-            stmt.setLong(1, id);
+    public boolean login(String name, String password) throws SQLException {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.LOGIN)){
+            stmt.setString(1, name);
+            try (ResultSet result = stmt.executeQuery()){
+                if (result.next()){
+                    return result.getString("password").equals(hashPassword(password));
+                }
+                return false;
+            }
+        }
+    }
 
+    @Override
+    public User findById(long uid) throws SQLException {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_ID)){
+            stmt.setLong(1, uid);
+            try (ResultSet result = stmt.executeQuery()) {
+                if (result.next()) {
+                    return mapUser(result);
+                } return null;
+            }
+        }
+    }
+
+    @Override
+    public User findByName(String name) throws SQLException {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_ID)){
+            stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()) {
                 if (result.next()) {
                     return mapUser(result);
