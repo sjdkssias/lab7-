@@ -15,9 +15,9 @@ import java.net.*;
 public class Client implements AutoCloseable {
 
     /** Default server hostname. */
-    private static final String HOST = "192.168.10.80";
+    private static final String HOST = System.getenv("SERVER_HOST");
     /** Default server port. */
-    private static final int PORT = 8345;
+    private static final int PORT = Integer.parseInt(System.getenv("SERVER_PORT"));
 
     /** Socket connection to the server. */
     private Socket socket;
@@ -97,7 +97,7 @@ public class Client implements AutoCloseable {
      * @throws IOException if the connection is closed or I/O fails.
      */
     protected void receiveResponse() throws IOException {
-        byte[] buf = new byte[1500];
+        byte[] buf = new byte[10000];
         if (in.read(buf) == -1) {
             throw new IOException("Connection closed by server");
         }

@@ -16,11 +16,8 @@ public class LoginCommand extends Command{
         if (request.args().size() < 2){
             return new Response("Fail to login, because u didn't write login and password");
         }
-        try{
-            UserService.getInstance().login(request.args().get(0), request.args().get(1));
-            return new Response("Successful login");
-        } catch (SQLException e){
-            return new Response("SQL error");
-        }
+        UserService.getInstance().login(request.args().get(0), request.args().get(1));
+        return new Response("Successful login");
+
     }
 }

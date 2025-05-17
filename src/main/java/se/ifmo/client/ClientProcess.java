@@ -1,11 +1,13 @@
 package se.ifmo.client;
 
 import se.ifmo.client.chat.Request;
+import se.ifmo.client.chat.UserReq;
 import se.ifmo.client.commands.ExecuteScriptCommand;
 import se.ifmo.client.commands.LoginCommand;
 import se.ifmo.client.commands.RegisterCommand;
 import se.ifmo.client.console.Console;
 import se.ifmo.client.utility.InputHandler;
+import se.ifmo.server.Server;
 import se.ifmo.server.models.classes.Dragon;
 
 import java.io.BufferedReader;
@@ -27,7 +29,7 @@ public class ClientProcess {
 
     /** Client instance for server communication. */
     private Client client;
-
+    private UserReq currentUser = null;
     /**
      * Constructs a ClientProcess with the specified console and client.
      *
@@ -52,9 +54,16 @@ public class ClientProcess {
                 if (inputLine.startsWith((new ExecuteScriptCommand()).getName())) {
                     (new ScriptHandler()).handleInput(inputLine);
                 }
-                client.sendRequest(createRequest(inputLine));
+                Request req = createRequest(inputLine);
+                if (req == null) {
+                    continue;
+                }
+                client.sendRequest(req);
                 client.receiveResponse();
-
+                if ((req.commandName().equals(new LoginCommand().getName()) || req.commandName().equals(new RegisterCommand().getName()))) {
+                    this.currentUser = req.userReq();
+                    console.writeln("User '" + req.userReq().getUsername() + "' is now authenticated.");
+                }
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {
@@ -88,19 +97,19 @@ public class ClientProcess {
         List<Dragon> dragons = null;
         if (commandName.equals(new RegisterCommand().getName()) || commandName.equals(new LoginCommand().getName())) {
             if (parts.length < 3) {
-                return new Request(commandName, List.of(parts.length > 1 ? parts[1] : ""), null);
+                console.writeln("Please write command with correct count of args");
+                return null;
             }
-            return new Request(commandName, List.of(parts[1], parts[2]), null);
+            return new Request(commandName, List.of(parts[1], parts[2]), null, new UserReq(parts[1], parts[2]));
         }
 
         try {
             if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(console));
         } catch (InterruptedException e) {
-            console.writeln("хуйня ебаная на строке 100 в клиенте");
+            Server.logger.error("Command Interrupt");
             return null;
         }
-        console.writeln("ошибка где то тут ебучая");
-        return new Request(commandName, List.of(arguments), dragons);
+        return new Request(commandName, List.of(arguments), dragons, currentUser);
     }
 
 

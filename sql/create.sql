@@ -20,5 +20,5 @@ create table dragon (
     speaking boolean,
     color text not null,
     character text,
-    toothcount float not null
+    head float not null
 );

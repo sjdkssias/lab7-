@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface DragonI {
     List<Dragon> findAll() throws SQLException;
-    Dragon findByID(long id) throws SQLException;
-    long addDragon(Dragon dragon) throws SQLException;
-    boolean removeById(long id) throws SQLException;
-    long removeUsersDragons(long uid) throws SQLException;
+    Dragon findByID(long id);
+    long addDragon(Dragon dragon) ;
+    boolean removeById(long id);
+    long removeUsersDragons(long uid);
 }

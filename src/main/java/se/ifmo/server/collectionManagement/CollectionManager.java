@@ -5,8 +5,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import se.ifmo.server.Server;
 import se.ifmo.server.database.DragonService;
 
@@ -57,9 +55,10 @@ public class CollectionManager {
             }
             return true;
         } catch (SQLException e) {
-            Server.logger.error("SQL error + " + e.getMessage());
+            Server.logger.error("error to load collection" + e.getMessage());
+            return false;
         }
-        return false;
+
     }
 
     /**
@@ -78,12 +77,8 @@ public class CollectionManager {
      * @param id the ID of the dragon to remove.
      */
     public synchronized void removeById(long id) {
-        try {
-            if (DragonService.getInctance().removeById(id)){
-                dragons.remove(id);
-            }
-        } catch (SQLException e){
-            Server.logger.error("nafine соси хуяку" + e.getMessage());
+        if (DragonService.getInctance().removeById(id)){
+            dragons.remove(id);
         }
     }
 
@@ -100,15 +95,11 @@ public class CollectionManager {
      * @param dragon the dragon to add to the collection.
      */
     public boolean add(Dragon dragon) {
-        try {
-            long generatedId = DragonService.getInctance().addDragon(dragon);
-            if (generatedId != -1) {
-                dragon.setId(generatedId);
-                dragons.put(generatedId, dragon);
-                return true;
-            }
-        } catch (SQLException e) {
-            Server.logger.error("Add to the database error: " + e);
+        long generatedId = DragonService.getInctance().addDragon(dragon);
+        if (generatedId != -1) {
+            dragon.setId(generatedId);
+            dragons.put(generatedId, dragon);
+            return true;
         }
         return false;
     }
@@ -125,4 +116,9 @@ public class CollectionManager {
         long maxKey = dragons.lastKey();
         return List.of(dragons.get(maxKey));
     }
+
+    public void removeUsersDragons(long uid){
+        DragonService.getInctance().removeUsersDragons(uid);
+    }
+
 }

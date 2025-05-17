@@ -3,6 +3,7 @@ package se.ifmo.client.commands;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.server.collectionManagement.CollectionManager;
+import se.ifmo.server.database.UserService;
 
 /**
  * The {@link ClearCommand} class represents a commandName to clear the user's collection of dragons.
@@ -27,8 +28,6 @@ public class ClearCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-        // Clears all dragons from the collection.
-        CollectionManager.getInstance().getDragons().clear();
-        return new Response("your collection was cleared");
+        return new Response("");
     }
 }

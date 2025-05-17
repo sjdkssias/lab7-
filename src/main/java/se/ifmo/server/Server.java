@@ -161,6 +161,7 @@ public class Server implements AutoCloseable, Runnable {
                     buf.flip();
                     byte[] data = new byte[buf.remaining()];
                     buf.get(data).clear();
+
                     Response response = Router.route(SerializationUtils.deserialize(data));
 
                     synchronized (key) {

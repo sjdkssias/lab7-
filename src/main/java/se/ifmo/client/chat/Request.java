@@ -24,6 +24,8 @@ public record Request(
         /**
          * A list of dragons associated with the commandName, if applicable.
          */
-        List<Dragon> dragons
+        List<Dragon> dragons,
+
+        UserReq userReq
 
 ) implements Serializable {}

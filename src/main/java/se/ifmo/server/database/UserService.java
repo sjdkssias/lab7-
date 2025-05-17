@@ -1,6 +1,7 @@
 package se.ifmo.server.database;
 
 
+import se.ifmo.server.Server;
 import se.ifmo.server.models.classes.User;
 
 import java.sql.PreparedStatement;
@@ -23,30 +24,35 @@ public class UserService implements UserI{
     }
 
     @Override
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll(){
         List<User> users = new ArrayList<>();
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_ALL);
             ResultSet result = stmt.executeQuery()) {
-            while (result.next()){
+            while (result.next()) {
                 users.add(mapUser(result));
             }
-            return users;
+        } catch (SQLException e) {
+            Server.logger.error("Error retrieving all users: " + e.getMessage(), e);
         }
+        return users;
     }
 
     @Override
-    public boolean register(String name, String password) throws SQLException {
+    public boolean register(String name, String password){
         if (findByName(name) != null) return false;
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.REGISTER)){
             stmt.setString(1, name);
             stmt.setString(2, hashPassword(password));
             stmt.executeUpdate();
             return true;
+        } catch (SQLException e) {
+            Server.logger.error("Error registering user: " + e.getMessage(), e);
+            return false;
         }
     }
 
     @Override
-    public boolean login(String name, String password) throws SQLException {
+    public boolean login(String name, String password) {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.LOGIN)){
             stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()){
@@ -55,33 +61,49 @@ public class UserService implements UserI{
                     System.out.println(hashPassword(password));
                     return result.getString("password").equals(hashPassword(password));
                 }
-                return false;
             }
+        } catch (SQLException e) {
+            Server.logger.error("Login error for user '" + name + "': " + e.getMessage(), e);
         }
+        return false;
     }
 
     @Override
-    public User findById(long uid) throws SQLException {
+    public User findById(long uid){
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_ID)){
             stmt.setLong(1, uid);
             try (ResultSet result = stmt.executeQuery()) {
                 if (result.next()) {
                     return mapUser(result);
                 } return null;
+            } catch (SQLException e) {
+                Server.logger.error("Error:" + e.getMessage());
+                return null;
             }
+        } catch (SQLException e) {
+            Server.logger.error("Error:" + e.getMessage());
+            return null;
         }
     }
 
     @Override
-    public User findByName(String name) throws SQLException {
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_NAME)){
+    public User findByName(String name) {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.FIND_BY_NAME)) {
             stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()) {
                 if (result.next()) {
                     return mapUser(result);
-                } return null;
+                }
+                return null;
+            } catch (SQLException e) {
+                Server.logger.error("SQL error :" + e.getMessage());
+                return null;
             }
+        } catch (SQLException e) {
+            Server.logger.error("SQL error :" + e.getMessage());
+            return null;
         }
+
     }
 
     private User mapUser(ResultSet result) throws SQLException {

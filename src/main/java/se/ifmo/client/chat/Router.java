@@ -1,6 +1,7 @@
 package se.ifmo.client.chat;
 
 import se.ifmo.client.commands.AllCommands;
+import se.ifmo.client.commands.AuthCommands;
 import se.ifmo.client.commands.util.HistoryManager;
 
 
@@ -12,6 +13,11 @@ import se.ifmo.client.commands.util.HistoryManager;
 public class Router {
 
     public static Response route(Request req){
+        boolean isAuthCommand = AuthCommands.AUTHCOMMANDS.stream()
+                .anyMatch(authCmd -> authCmd.getName().equalsIgnoreCase(req.commandName()));
+        if (!isAuthCommand && req.userReq() == null){
+            return new Response("You must to register or login.");
+        }
         return AllCommands.ALLCOMANDS.stream()
                 .filter(command -> command.getName().equals(req.commandName()))
                 .findFirst().map(command -> {
@@ -20,5 +26,6 @@ public class Router {
                     return command.execute(req);
                 }).orElse(new Response("No such command"));
     }
+
 }
 
