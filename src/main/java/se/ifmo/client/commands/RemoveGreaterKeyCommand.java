@@ -38,39 +38,14 @@ public class RemoveGreaterKeyCommand extends Command {
         if (request.args() == null) {
             return new Response("Request arguments are null");
         }
-
-        // Initialize console to get user input
-        Console console = new Console();
-
-        // Prompt the user to enter an ID to compare
-        console.write("Enter the ID for the new dragon (Integer value):");
-        String idString = console.read();
         Long id;
 
-        // Parse the entered ID
         try {
-            id = Long.parseLong(idString);
+            id = Long.parseLong(request.args().get(0));
         } catch (NumberFormatException e) {
             return new Response("Invalid ID format. Please enter a valid integer.");
         }
-
-        // Get the collection of dragons
-        TreeMap<Long, Dragon> collection = CollectionManager.getInstance().getDragons();
-
-        // Find the keys that are greater than the entered ID
-        List<Long> keysToRemove = new ArrayList<>(collection.tailMap(id, false).keySet());
-
-        // If no elements with greater keys are found, return a message indicating so
-        if (keysToRemove.isEmpty()) {
-            return new Response("No elements found with key greater than " + id);
-        }
-
-        // Remove dragons with keys greater than the entered ID
-        for (long key : keysToRemove) {
-            collection.remove(key);
-        }
-
-        // Return a message indicating how many elements were removed
-        return new Response("Removed " + keysToRemove.size() + " elements with key greater than " + id);
+        CollectionManager.getInstance().removeGreater(id, request.userRec().username());
+        return new Response("Removed elements with key greater than " + id);
     }
 }

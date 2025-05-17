@@ -26,6 +26,6 @@ public record Request(
          */
         List<Dragon> dragons,
 
-        UserReq userReq
+        UserRec userRec
 
 ) implements Serializable {}

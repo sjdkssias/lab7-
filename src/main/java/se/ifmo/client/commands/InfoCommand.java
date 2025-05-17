@@ -34,15 +34,9 @@ public class InfoCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-//        try {
-//            int dbCount = DragonService.getInctance().findAll().size();
-//            return new Response("collection type: TreeMap\ndatabase records: " + dbCount);
-//        } catch (SQLException e) {
-//            return new Response("Error getting info");
-//        }
-        // Retrieve the collection of dragons from the CollectionManager
+
         TreeMap<Long, Dragon> collection = CollectionManager.getInstance().getDragons();
-        // Return the collection's type and size as a response
+
         return new Response("collection type: " + collection.getClass().getSimpleName() + "\n" + "collection size: " + collection.size());
     }
 }

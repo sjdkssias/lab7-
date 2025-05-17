@@ -96,13 +96,14 @@ public class Client implements AutoCloseable {
      *
      * @throws IOException if the connection is closed or I/O fails.
      */
-    protected void receiveResponse() throws IOException {
+    protected Response receiveResponse() throws IOException {
         byte[] buf = new byte[10000];
         if (in.read(buf) == -1) {
             throw new IOException("Connection closed by server");
         }
         Response response = SerializationUtils.deserialize(buf);
         console.writeln(response.getMessage());
+        return SerializationUtils.deserialize(buf);
     }
 
     /**

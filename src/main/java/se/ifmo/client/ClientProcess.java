@@ -1,7 +1,8 @@
 package se.ifmo.client;
 
 import se.ifmo.client.chat.Request;
-import se.ifmo.client.chat.UserReq;
+import se.ifmo.client.chat.Response;
+import se.ifmo.client.chat.UserRec;
 import se.ifmo.client.commands.ExecuteScriptCommand;
 import se.ifmo.client.commands.LoginCommand;
 import se.ifmo.client.commands.RegisterCommand;
@@ -29,7 +30,7 @@ public class ClientProcess {
 
     /** Client instance for server communication. */
     private Client client;
-    private UserReq currentUser = null;
+    private UserRec currentUser;
     /**
      * Constructs a ClientProcess with the specified console and client.
      *
@@ -51,19 +52,23 @@ public class ClientProcess {
         while (true) {
             try {
                 String inputLine = readCommandWithArgs();
+
                 if (inputLine.startsWith((new ExecuteScriptCommand()).getName())) {
                     (new ScriptHandler()).handleInput(inputLine);
                 }
+
                 Request req = createRequest(inputLine);
+
                 if (req == null) {
                     continue;
                 }
                 client.sendRequest(req);
                 client.receiveResponse();
                 if ((req.commandName().equals(new LoginCommand().getName()) || req.commandName().equals(new RegisterCommand().getName()))) {
-                    this.currentUser = req.userReq();
-                    console.writeln("User '" + req.userReq().getUsername() + "' is now authenticated.");
+                    this.currentUser = req.userRec();
+                    console.writeln("User '" + req.userRec().username() + "' is now authenticated.");
                 }
+
             } catch (IOException ioEx) {
                 console.writeln("Connection error: " + ioEx.getMessage());
                 try {
@@ -94,17 +99,18 @@ public class ClientProcess {
         String[] parts = input.split("\\s+", 3);
         String commandName = parts[0];
         String arguments = parts.length > 1 ? parts[1] : "";
+
         List<Dragon> dragons = null;
         if (commandName.equals(new RegisterCommand().getName()) || commandName.equals(new LoginCommand().getName())) {
             if (parts.length < 3) {
                 console.writeln("Please write command with correct count of args");
                 return null;
             }
-            return new Request(commandName, List.of(parts[1], parts[2]), null, new UserReq(parts[1], parts[2]));
+            return new Request(commandName, List.of(parts[1], parts[2]), null, new UserRec(parts[1], parts[2]));
         }
 
         try {
-            if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(console));
+            if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(console, currentUser));
         } catch (InterruptedException e) {
             Server.logger.error("Command Interrupt");
             return null;

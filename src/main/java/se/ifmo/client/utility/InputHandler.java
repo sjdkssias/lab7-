@@ -1,5 +1,6 @@
 package se.ifmo.client.utility;
 
+import se.ifmo.client.chat.UserRec;
 import se.ifmo.client.console.Console;
 import se.ifmo.server.models.classes.Coordinates;
 import se.ifmo.server.models.classes.Dragon;
@@ -25,19 +26,16 @@ public class InputHandler {
      * @return the created {@link Dragon} object with the user-provided attributes.
      * @throws InterruptedException if the operation is interrupted (e.g., user cancels input).
      */
-    public static Dragon get(Console console) throws InterruptedException {
+    public static Dragon get(Console console, UserRec currentUser) throws InterruptedException {
         Dragon dragon = new Dragon();
 
-        // Collect name input
         while (!input("name", dragon::setName, Function.identity(), console)) {}
 
-        // Collect coordinates input
         Coordinates coordinates = new Coordinates();
         while (!input("coordinate x", coordinates::setX, Float::parseFloat, console)) {};
         while (!input("coordinate y", coordinates::setY, Long::valueOf, console)) {};
         dragon.setCoordinates(coordinates);
 
-        // Collect speaking status input
         while (!input("speaking", dragon::setSpeaking, value -> {
             if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
                 throw new IllegalArgumentException("Invalid input! Please enter 'true' or 'false'.");
@@ -45,16 +43,15 @@ public class InputHandler {
             return Boolean.valueOf(value);
         }, console));
 
-        // Collect color input
         while (!input("color", dragon::setColor, Color::valueOf, console)) {};
 
-        // Collect character input
         while (!input("character", dragon::setCharacter, DragonCharacter::valueOf, console)) {};
 
-        // Collect dragon head input
         DragonHead head = new DragonHead();
         while (!input("dragon head", head::setToothcount, Float::parseFloat, console));
         dragon.setHead(head);
+
+        dragon.setOwnerName(currentUser.username());
 
         return dragon;
     }

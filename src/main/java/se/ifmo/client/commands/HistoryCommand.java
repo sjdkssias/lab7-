@@ -27,7 +27,7 @@ public class HistoryCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-        // Retrieve the history of commands and return it as a r
+
         return new Response(String.join("\n", HistoryManager.getInstance().getHistory()));
     }
 }

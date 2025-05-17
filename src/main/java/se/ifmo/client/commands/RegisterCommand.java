@@ -4,9 +4,6 @@ import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.server.database.UserService;
 
-
-import static se.ifmo.server.crypt.Crypt.hashPassword;
-
 public class RegisterCommand extends Command {
     public RegisterCommand() {
         super("register", "command to register");
@@ -18,7 +15,7 @@ public class RegisterCommand extends Command {
 
             return new Response("Failed to register, please write LOGIN AND PASSWORD" + request.args());
         }
-        UserService.getInstance().register(request.userReq());
+        UserService.getInstance().register(request.userRec());
         return new Response("Successful register. You can use console app");
     }
 }

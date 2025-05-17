@@ -1,7 +1,6 @@
 package se.ifmo.server.models.classes;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import se.ifmo.server.models.enums.Color;
 import se.ifmo.server.models.enums.DragonCharacter;
@@ -19,10 +18,9 @@ public class Dragon implements Comparable<Dragon>, Validatable, Serializable {
      * The unique identifier of the dragon.
      * This field is ignored during JSON serialization.
      */
-    @JsonIgnore
-    @Getter
     private long id;
-
+    @NonNull
+    private String ownerName;
     /**
      * The name of the dragon.
      * Cannot be null or empty.
@@ -70,7 +68,6 @@ public class Dragon implements Comparable<Dragon>, Validatable, Serializable {
      */
     @NonNull
     private DragonHead head;
-    private int user_id;
 
     /**
      * Compares this dragon with another dragon by their IDs.

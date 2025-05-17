@@ -33,7 +33,6 @@ public class MaxByIdCommand extends Command {
         // Get the dragon with the maximum ID value from the collection
         CollectionManager.getInstance().getMaxByKey();
 
-        // Return a response with the dragon having the max ID
         return new Response("Dragons with max id: " + CollectionManager.getInstance().getMaxByKey().toString());
     }
 }

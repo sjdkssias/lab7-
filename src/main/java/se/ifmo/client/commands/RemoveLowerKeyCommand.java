@@ -35,42 +35,20 @@ public class RemoveLowerKeyCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-        // Check if arguments are provided in the request
         if (request.args() == null) {
-            return new Response("Request arguments are null");
+            return new Response("You must provide the ID of the dragon to remove.");
         }
 
-        // Initialize console to get user input
-        Console console = new Console();
-
-        // Prompt the user to enter an ID to compare the keys
-        console.write("Enter the ID (Integer value) for comparison:");
-        String idString = console.read();
-        Long id;
-
-        // Parse the entered ID
+        long id;
         try {
-            id = Long.parseLong(idString);
+            id = Long.parseLong(request.args().get(0));
         } catch (NumberFormatException e) {
-            return new Response("Invalid ID format. Please enter a valid integer.");
+            return new Response("Invalid ID format");
         }
 
-        // Remove elements from the collection whose key is less than the specified ID
-        TreeMap<Long, Dragon> collection = CollectionManager.getInstance().getDragons();
-        List<Long> keysToRemove = new ArrayList<>(collection.headMap(id, false).keySet());
+        CollectionManager.getInstance().removeLower(id, request.userRec().username());
 
-        // If no elements found with a key lower than the specified ID, return a message
-        if (keysToRemove.isEmpty()) {
-            return new Response("No elements found with key lower than " + id);
-        }
-
-        // Remove the elements from the collection
-        for (long key : keysToRemove) {
-            collection.remove(key);
-        }
-
-        // Return a message indicating how many elements were removed
-        return new Response("Removed " + keysToRemove.size() + " elements with key lower than " + id);
+        return new Response("Removed elements with key greater than " + id);
     }
 }
 

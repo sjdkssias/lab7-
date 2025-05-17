@@ -2,8 +2,11 @@ package se.ifmo.client.commands;
 
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
+import se.ifmo.client.chat.UserRec;
 import se.ifmo.client.console.Console;
 import se.ifmo.server.collectionManagement.CollectionManager;
+
+import java.util.List;
 
 /**
  * The {@link RemoveKeyCommand} class represents a commandName that removes all elements from the collection
@@ -30,30 +33,19 @@ public class RemoveKeyCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-        // Check if arguments are provided in the request
         if (request.args() == null) {
-            return new Response("Request arguments are null");
+            return new Response("You must provide the ID of the dragon to remove.");
         }
 
-        // Initialize console to get user input
-        Console console = new Console();
-
-        // Prompt the user to enter an ID to remove
-        console.write("Enter the ID for the dragon (Integer value):");
-        String idString = console.read();
-        Long id;
-
-        // Parse the entered ID
+        long id;
         try {
-            id = Long.parseLong(idString);
+            id = Long.parseLong(request.args().get(0));
         } catch (NumberFormatException e) {
-            return new Response("Invalid ID format. Please enter a valid integer.");
+            return new Response("Invalid ID format");
         }
 
-        // Remove elements from the collection by the given ID
-        CollectionManager.getInstance().removeById(id);
+        CollectionManager.getInstance().removeById(id, request.userRec().username());
 
-        // Return a message indicating how many elements were removed
-        return new Response("Elements with key " + id + " were removed.");
+        return new Response("Dragon with ID " + id + " was removed (if it existed and belonged to you).");
     }
 }

@@ -36,18 +36,15 @@ public class PrintUniqueHeadCommand extends Command {
     @Override
     public Response execute(Request request) {
 
-        // Group dragons by their head's tooth count and count occurrences
         Map<Integer, Long> toothCountFrequency = CollectionManager.getInstance().getDragons().values().stream()
                 .filter(dragon -> dragon.getHead() != null)
                 .collect(Collectors.groupingBy(dragon -> (int) dragon.getHead().getToothcount(), Collectors.counting()));
 
-        // Filter dragons whose tooth count appears only once
         List<Dragon> uniqueDragons = CollectionManager.getInstance().getDragons().values().stream()
                 .filter(dragon -> dragon.getHead() != null)
                 .filter(dragon -> toothCountFrequency.getOrDefault(dragon.getHead().getToothcount(), 0L) == 1)
                 .collect(Collectors.toList());
 
-        // Return a response based on whether any unique dragons were found
         if (uniqueDragons.isEmpty()) {
             return new Response("No dragons with unique heads");
         }

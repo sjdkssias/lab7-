@@ -76,9 +76,9 @@ public class CollectionManager {
      *
      * @param id the ID of the dragon to remove.
      */
-    public synchronized void removeById(long id) {
-        if (DragonService.getInctance().removeById(id)){
-            dragons.remove(id);
+    public synchronized void removeById(long id, String ownerName) {
+        if (DragonService.getInctance().removeById(id, ownerName)) {
+            dragons.entrySet().removeIf(entry -> entry.getKey() == id && ownerName.equals(entry.getValue().getOwnerName()));
         }
     }
 
@@ -117,8 +117,36 @@ public class CollectionManager {
         return List.of(dragons.get(maxKey));
     }
 
-    public void removeUsersDragons(long uid){
-        DragonService.getInctance().removeUsersDragons(uid);
+    public synchronized long removeUsersDragons(String ownerName){
+        dragons.entrySet().removeIf(entry -> ownerName.equals(entry.getValue().getOwnerName()));
+        return DragonService.getInctance().removeUsersDragons(ownerName);
+    }
+
+    public synchronized int removeGreater(long id, String ownerName){
+
+        List<Long> fromdb = dragons.tailMap(id, false).entrySet().stream()
+                .filter(entry -> Objects.equals(ownerName, entry.getValue().getOwnerName()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList()).stream()
+                .filter(key -> DragonService.getInctance().removeById(key, ownerName))
+                .collect(Collectors.toList());
+
+        fromdb.forEach(dragons::remove);
+
+        return fromdb.size();
+    }
+
+    public synchronized int removeLower(long id, String ownerName){
+        List<Long> fromdb = dragons.headMap(id, false).entrySet().stream()
+                .filter(entry -> Objects.equals(ownerName, entry.getValue().getOwnerName()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList()).stream()
+                .filter(key -> DragonService.getInctance().removeById(key, ownerName))
+                .collect(Collectors.toList());
+
+        fromdb.forEach(dragons::remove);
+
+        return fromdb.size();
     }
 
 }

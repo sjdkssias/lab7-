@@ -37,9 +37,9 @@ public class DragonService implements DragonI {
     }
 
     @Override
-    public Dragon findByID(long id) {
-        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.FIND_BY_ID)) {
-            stmt.setLong(1, id);
+    public Dragon findByName(String ownerName) {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.FIND_BY_NAME)) {
+            stmt.setString(1, ownerName);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return dragonMap(rs);
@@ -53,8 +53,8 @@ public class DragonService implements DragonI {
 
     @Override
     public long addDragon(Dragon dragon) {
-        if (dragon.getUser_id() <= 0) {
-            Server.logger.error("Попытка вставить дракона с некорректным user_id = " + dragon.getUser_id());
+        if (dragon.getOwnerName() == null) {
+            Server.logger.error("Попытка вставить дракона без владельца");
             return -1;
         }
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.ADD_DRAGON)) {
@@ -69,7 +69,7 @@ public class DragonService implements DragonI {
                 stmt.setNull(6, java.sql.Types.VARCHAR);
             }
             stmt.setFloat(7, dragon.getHead().getToothcount());
-            stmt.setInt(8, dragon.getUser_id());
+            stmt.setString(8, dragon.getOwnerName());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) return rs.getLong(1);
@@ -82,9 +82,10 @@ public class DragonService implements DragonI {
     }
 
     @Override
-    public boolean removeById(long id) {
+    public boolean removeById(long id, String ownerName) {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.REMOVE_DRAGON_BY_ID)) {
             stmt.setLong(1, id);
+            stmt.setString(2, ownerName);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             Server.logger.error("remove by id error : " + e.getMessage(), e);
@@ -93,9 +94,9 @@ public class DragonService implements DragonI {
     }
 
     @Override
-    public long removeUsersDragons(long uid) {
+    public long removeUsersDragons(String ownerName) {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.REMOVE_USERS_DRAGON)) {
-            stmt.setLong(1, uid);
+            stmt.setString(1, ownerName);
             return stmt.executeUpdate();
         } catch (SQLException e) {
             Server.logger.error("remove users dragons error : " + e.getMessage(), e);
@@ -118,7 +119,7 @@ public class DragonService implements DragonI {
             }
         }
         dragon.setHead(new DragonHead(dragonResult.getFloat("head")));
-        dragon.setUser_id(dragonResult.getInt("user_id"));
+        dragon.setOwnerName(dragonResult.getString("owner_name"));
         return dragon;
     }
 }
