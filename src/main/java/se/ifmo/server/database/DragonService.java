@@ -53,6 +53,10 @@ public class DragonService implements DragonI {
 
     @Override
     public long addDragon(Dragon dragon) {
+        if (dragon.getUser_id() <= 0) {
+            Server.logger.error("Попытка вставить дракона с некорректным user_id = " + dragon.getUser_id());
+            return -1;
+        }
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.ADD_DRAGON)) {
             stmt.setString(1, dragon.getName());
             stmt.setFloat(2, dragon.getCoordinates().getX());
@@ -65,12 +69,13 @@ public class DragonService implements DragonI {
                 stmt.setNull(6, java.sql.Types.VARCHAR);
             }
             stmt.setFloat(7, dragon.getHead().getToothcount());
+            stmt.setInt(8, dragon.getUser_id());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) return rs.getLong(1);
             return -1;
         } catch (SQLException e) {
-            System.out.println("add dragon to the db error:");
+            System.out.println("add dragon to the db error:" + e.getMessage());
             Server.logger.error("add dragon to the db error: " + e.getMessage(), e);
             return -1;
         }
@@ -113,6 +118,7 @@ public class DragonService implements DragonI {
             }
         }
         dragon.setHead(new DragonHead(dragonResult.getFloat("head")));
+        dragon.setUser_id(dragonResult.getInt("user_id"));
         return dragon;
     }
 }

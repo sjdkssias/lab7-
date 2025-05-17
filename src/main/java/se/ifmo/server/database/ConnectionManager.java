@@ -12,8 +12,7 @@ import java.sql.SQLException;
 public class ConnectionManager {
     private Connection connection;
     private static ConnectionManager instance;
-    //private static final String URL = System.getenv("DB_URL");
-    private static final String URL = "jdbc:postgresql://127.0.1.1:5432/studs";
+    private static final String URL = System.getenv("DB_URL");
     private static final String USERNAME = System.getenv("DB_USERNAME");
     private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
@@ -23,10 +22,6 @@ public class ConnectionManager {
             this.connection = getConnection();
             System.out.println("Database connection OK");
         } catch (ClassNotFoundException | SQLException e){
-            System.err.println("Connection error: " + e.getMessage());
-            System.err.println(URL);
-            System.err.println(USERNAME);
-            System.err.println(PASSWORD);
             Server.logger.error(e);
             System.exit(1);//надо обработать
         }

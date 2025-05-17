@@ -20,5 +20,6 @@ create table dragon (
     speaking boolean,
     color text not null,
     character text,
-    head float not null
+    head float not null,
+    user_id integer not null references users(uid) on delete cascade
 );

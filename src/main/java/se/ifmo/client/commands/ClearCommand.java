@@ -4,6 +4,7 @@ import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.server.collectionManagement.CollectionManager;
 import se.ifmo.server.database.UserService;
+import se.ifmo.server.models.classes.User;
 
 /**
  * The {@link ClearCommand} class represents a commandName to clear the user's collection of dragons.
@@ -28,6 +29,13 @@ public class ClearCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-        return new Response("");
+        User user = UserService.getInstance().findByName(request.userReq().getUsername());
+        if (user == null) {
+            return new Response("User not found. Cannot clear collection.");
+        }
+
+        long uid = user.getUid();
+        CollectionManager.getInstance().removeUsersDragons(uid);
+        return new Response("User with ID: " + uid + " cleared their collection.");
     }
 }

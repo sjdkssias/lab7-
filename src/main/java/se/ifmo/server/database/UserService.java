@@ -1,6 +1,7 @@
 package se.ifmo.server.database;
 
 
+import se.ifmo.client.chat.UserReq;
 import se.ifmo.server.Server;
 import se.ifmo.server.models.classes.User;
 
@@ -38,11 +39,11 @@ public class UserService implements UserI{
     }
 
     @Override
-    public boolean register(String name, String password){
-        if (findByName(name) != null) return false;
+    public boolean register(UserReq req){
+        if (findByName(req.getUsername()) != null) return false;
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.REGISTER)){
-            stmt.setString(1, name);
-            stmt.setString(2, hashPassword(password));
+            stmt.setString(1, req.getUsername());
+            stmt.setString(2, req.getPassword());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -52,18 +53,18 @@ public class UserService implements UserI{
     }
 
     @Override
-    public boolean login(String name, String password) {
+    public boolean login(UserReq req) {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.LOGIN)){
-            stmt.setString(1, name);
+            stmt.setString(1, req.getUsername());
             try (ResultSet result = stmt.executeQuery()){
                 if (result.next()){
                     System.out.println(result.getString("password"));
-                    System.out.println(hashPassword(password));
-                    return result.getString("password").equals(hashPassword(password));
+                    System.out.println(hashPassword(req.getPassword()));
+                    return result.getString("password").equals(req.getPassword());
                 }
             }
         } catch (SQLException e) {
-            Server.logger.error("Login error for user '" + name + "': " + e.getMessage(), e);
+            Server.logger.error("Login error for user '" + req.getUsername() + "': " + e.getMessage(), e);
         }
         return false;
     }
@@ -108,6 +109,7 @@ public class UserService implements UserI{
 
     private User mapUser(ResultSet result) throws SQLException {
         User user = new User(result.getString("name"),result.getString("password") );
+        user.setUid(result.getLong("uid"));
         return user;
     }
 }
