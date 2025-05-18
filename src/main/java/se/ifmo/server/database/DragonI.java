@@ -11,4 +11,6 @@ public interface DragonI {
     long addDragon(Dragon dragon) ;
     boolean removeById(long id, String ownerName);
     long removeUsersDragons(String ownerName);
+    boolean update(Dragon dragon);
+    boolean insert(Dragon dragon);
 }

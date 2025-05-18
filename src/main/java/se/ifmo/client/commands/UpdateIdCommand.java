@@ -31,30 +31,19 @@ public class UpdateIdCommand extends Command {
      */
     @Override
     public Response execute(Request request) {
-        // Check if the arguments are provided
         if (request.args() == null) {
             return new Response("null request");
         }
-
-
         Long id;
         try {
-            // Parse the ID
             id = Long.parseLong(request.args().get(0));
         } catch (NumberFormatException e) {
-            // Handle invalid ID format
-            return new Response("Invalid ID format. Please enter a valid integer.");
+            return new Response(false, "Invalid ID format. Please enter a valid integer.");
         }
-
-        // Check if the dragon with the specified ID exists in the collection
         if (!CollectionManager.getInstance().containsId(id)) {
-            return new Response("Dragon with this ID doesn't exist!");
+            return new Response(false,"Dragon with this ID doesn't exist!");
         }
-
-        // Replace the dragon with the new value in the collection
-        CollectionManager.getInstance().getDragons().replace(id, request.dragons().get(0));
-
-        // Return success message
+        CollectionManager.getInstance().update(id, request.dragons().get(0), request.userRec().username());
         return new Response("Dragon with ID " + id + " was saved to collection with new value");
     }
 }

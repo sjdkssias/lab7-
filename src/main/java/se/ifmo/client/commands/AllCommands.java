@@ -34,7 +34,8 @@ public class AllCommands {
             new InfoCommand(),
             new ExecuteScriptCommand(),
             new RegisterCommand(),
-            new LoginCommand()
+            new LoginCommand(),
+            new LogoutCommand()
     );
 
     /**

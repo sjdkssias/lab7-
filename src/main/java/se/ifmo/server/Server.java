@@ -3,6 +3,7 @@ package se.ifmo.server;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.Router;
 import se.ifmo.client.console.Console;
@@ -14,6 +15,7 @@ import java.net.SocketAddress;
 import java.nio.channels.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
+import java.util.concurrent.*;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -23,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
  * Uses a selector pattern to handle multiple connections efficiently.
  */
 public class Server implements AutoCloseable, Runnable {
+
     /** Default server port number. */
     private static final int PORT = Integer.parseInt(System.getenv("SERVER_PORT"));
     /** Buffer size for network operations. */
@@ -37,6 +40,11 @@ public class Server implements AutoCloseable, Runnable {
     private Console console;
     /** Buffer for temporary data storage. */
     private ByteBuffer buf;
+
+    private final ForkJoinPool readerPool = new ForkJoinPool();
+    private final ExecutorService processorPool = Executors.newFixedThreadPool(5);
+    private final ForkJoinPool writePool = new ForkJoinPool();
+
 
     /**
      * Constructs a new server instance with the specified console.
@@ -101,11 +109,26 @@ public class Server implements AutoCloseable, Runnable {
                 logger.info("Acceptable key detected. Accepting connection...");
                 acceptConnection();
             } else if (key.isReadable()) {
-                logger.info("Readable key detected. Processing read...");
-                readKey(key);
+                synchronized (key) {
+                    try {
+                        readKey(key);
+                    } catch (Exception e) {
+                        logger.error("Read error", e);
+                        closeConnection(key);
+                    }
+                }
             } else if (key.isWritable()) {
-                logger.info("Writable key detected. Processing write...");
-                writeKey(key);
+                writePool.submit(() -> {
+                    synchronized (key) {
+                        try {
+                            writeKey(key);
+                        } catch (Exception e) {
+                            logger.error("Write error", e);
+                            closeConnection(key);
+                        }
+                    }
+                });
+
             }
         }
     }
@@ -139,101 +162,101 @@ public class Server implements AutoCloseable, Runnable {
      * @param key the selection key representing the client connection
      * @throws IOException if an I/O error occurs during reading
      */
-    private void readKey(SelectionKey key) throws IOException {
-        if (!key.isValid()) return;
+    private void readKey(SelectionKey key) {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = ByteBuffer.allocate(BUFFER_SIZE);
-
         try {
+            if (!socketChannel.isOpen()) {
+                logger.warn("Tried to read from closed channel");
+                return;
+            }
+
             int bytesRead = socketChannel.read(buf);
 
             if (bytesRead == -1) {
-                logger.info("Client was disconnected");
+                logger.info("Client disconnected");
                 closeConnection(key);
                 return;
             }
 
             if (bytesRead > 0) {
-                try {
-                    buf.flip();
-                    byte[] data = new byte[buf.remaining()];
-                    buf.get(data).clear();
+                buf.flip();
+                byte[] data = new byte[buf.remaining()];
+                buf.get(data);
 
-                    Response response = Router.route(SerializationUtils.deserialize(data));
+                readerPool.submit(() -> {
+                    try {
+                        Request request = SerializationUtils.deserialize(data);
 
-                    synchronized (key) {
-                        if (key.isValid()) {
-                            key.attach(ByteBuffer.wrap(SerializationUtils.serialize(response)));
-                            key.interestOps(SelectionKey.OP_WRITE);
-                            selector.wakeup();
-                        }
+                        processorPool.submit(() -> {
+                            try {
+                                Response response = Router.route(request);
+
+                                writePool.submit(() -> {
+                                    try {
+                                        byte[] respBytes = SerializationUtils.serialize(response);
+                                        ByteBuffer respBuffer = ByteBuffer.wrap(respBytes);
+
+                                        synchronized (key) {
+                                            if (key.isValid()) {
+                                                key.attach(respBuffer);
+                                                key.interestOps(SelectionKey.OP_WRITE);
+                                                selector.wakeup();
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        logger.error("Error during response serialization", e);
+                                        closeConnection(key);
+                                    }
+                                });
+                            } catch (Exception e) {
+                                logger.error("Error during request processing", e);
+                                closeConnection(key);
+                            }
+                        });
+                    } catch (Exception e) {
+                        logger.error("Error during request deserialization", e);
+                        closeConnection(key);
                     }
-                } catch (Exception e) {
-                    logger.error("Error processing request", e);
-                    closeConnection(key);
-                }
+                });
             }
         } catch (IOException e) {
-            logger.error("Error reading from client");
-            socketChannel.close();
+            logger.error("Error reading from client", e);
+            closeConnection(key);
         }
     }
 
-    /**
-     * Handles write operations for a selection key.
-     * Sends response data back to the client.
-     *
-     * @param key the selection key representing the client connection
-     * @throws IOException if an I/O error occurs during writing
-     */
     private void writeKey(SelectionKey key) {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buf = (ByteBuffer) key.attachment();
-
+        if (buf == null) {
+            key.interestOps(SelectionKey.OP_READ);
+            return;
+        }
         try {
             socketChannel.write(buf);
 
             if (!buf.hasRemaining()) {
-                buf.clear();
-                key.attach(ByteBuffer.allocate(BUFFER_SIZE));
+                key.attach(null);
                 key.interestOps(SelectionKey.OP_READ);
                 selector.wakeup();
             }
-        } catch (IOException e){
-            logger.error("");
+        } catch (IOException e) {
+            logger.error("Write error", e);
             closeConnection(key);
         }
-
     }
 
-    /**
-     * Closes a client connection and cleans up resources.
-     * Automatically saves the collection before closing.
-     *
-     * @param key the selection key representing the client connection
-     */
+
     private void closeConnection(SelectionKey key) {
         try {
-            logger.info("Client disconnected");
+            key.cancel();
             key.channel().close();
         } catch (IOException e) {
-            logger.error("Error with closing connection");
-            throw new RuntimeException(e);
+            logger.error("Error closing connection", e);
         }
-        key.cancel();
     }
 
-    /**
-     * Saves the current collection state to persistent storage.
-     * Delegates to the CollectionManager's save method.
-     */
-
-    /**
-     * Closes all server resources including selector and server socket channel.
-     * Automatically saves the collection before closing.
-     *
-     * @throws IOException if an I/O error occurs during closure
-     */
     @Override
     public void close() throws IOException {
         if (selector != null) {
@@ -244,5 +267,8 @@ public class Server implements AutoCloseable, Runnable {
             serverSocketChannel.close();
             logger.info("Channel was closed");
         }
+        processorPool.shutdown();
+        readerPool.shutdown();
+        writePool.shutdown();
     }
 }

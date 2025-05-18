@@ -5,6 +5,7 @@ import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.UserRec;
 import se.ifmo.client.commands.ExecuteScriptCommand;
 import se.ifmo.client.commands.LoginCommand;
+import se.ifmo.client.commands.LogoutCommand;
 import se.ifmo.client.commands.RegisterCommand;
 import se.ifmo.client.console.Console;
 import se.ifmo.client.utility.InputHandler;
@@ -69,6 +70,9 @@ public class ClientProcess {
                         this.currentUser = req.userRec();
                         console.writeln("User '" + currentUser.username() + "' is now authenticated.");
                     }
+                }
+                if ((req.commandName().equals(new LogoutCommand().getName()))){
+                    this.currentUser = null;
                 }
 
             } catch (IOException ioEx) {

@@ -5,6 +5,8 @@ import se.ifmo.client.chat.Response;
 import se.ifmo.server.collectionManagement.CollectionManager;
 import se.ifmo.server.models.classes.Dragon;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,19 +38,30 @@ public class PrintUniqueHeadCommand extends Command {
     @Override
     public Response execute(Request request) {
 
-        Map<Integer, Long> toothCountFrequency = CollectionManager.getInstance().getDragons().values().stream()
+        Collection<Dragon> dragonsValues;
+
+        dragonsValues = new ArrayList<>(CollectionManager.getInstance().getDragons().values());
+        Map<Integer, Long> toothCountFrequency = dragonsValues.stream() 
                 .filter(dragon -> dragon.getHead() != null)
                 .collect(Collectors.groupingBy(dragon -> (int) dragon.getHead().getToothcount(), Collectors.counting()));
 
-        List<Dragon> uniqueDragons = CollectionManager.getInstance().getDragons().values().stream()
+        List<Dragon> uniqueDragons = dragonsValues.stream()
                 .filter(dragon -> dragon.getHead() != null)
-                .filter(dragon -> toothCountFrequency.getOrDefault(dragon.getHead().getToothcount(), 0L) == 1)
+                .filter(dragon -> toothCountFrequency.getOrDefault((int) dragon.getHead().getToothcount(), 0L) == 1)
                 .collect(Collectors.toList());
 
         if (uniqueDragons.isEmpty()) {
-            return new Response("No dragons with unique heads");
+            return new Response(false,"No dragons with unique heads");
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Dragon dragon : uniqueDragons) {
+                sb.append(dragon.toString()).append("\n");
+            }
+            if (sb.length() > 0) {
+                sb.setLength(sb.length() - 1);
+            }
+            return new Response(sb.toString());
         }
-        return new Response(String.valueOf(uniqueDragons));
     }
 }
 

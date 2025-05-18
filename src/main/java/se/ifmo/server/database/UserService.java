@@ -9,11 +9,15 @@ import se.ifmo.server.models.classes.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class UserService implements UserI{
 
     private static UserService instance;
+    private final Set<String> activeSessions = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private UserService(){
     }
@@ -43,6 +47,10 @@ public class UserService implements UserI{
 
     @Override
     public boolean login(UserRec user) {
+        if (active(user)){
+            Server.logger.log(Level.INFO, "User has already logged in");
+            return false;
+        }
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(UserSQl.LOGIN)){
             stmt.setString(1, user.username());
             try (ResultSet result = stmt.executeQuery()){
@@ -52,6 +60,8 @@ public class UserService implements UserI{
                     boolean r = result.getString("password").equals(user.password());
                     if (!r){
                         Server.logger.log(Level.INFO, "wrong password");
+                    } else {
+                        addSession(user);
                     }
                     return r;
                 }
@@ -73,11 +83,11 @@ public class UserService implements UserI{
                 }
                 return null;
             } catch (SQLException e) {
-                Server.logger.error("SQL error :" + e.getMessage());
+                Server.logger.log(Level.ERROR, "SQL error :" + e.getMessage());
                 return null;
             }
         } catch (SQLException e) {
-            Server.logger.error("SQL error :" + e.getMessage());
+            Server.logger.log(Level.ERROR, "SQL error :" + e.getMessage());
             return null;
         }
 
@@ -86,6 +96,26 @@ public class UserService implements UserI{
     private User mapUser(ResultSet result) throws SQLException {
         User user = new User(result.getString("name"),result.getString("password"));
         return user;
+    }
+
+    private void addSession(UserRec rec)  {
+        activeSessions.add(rec.username());
+        Server.logger.log(Level.INFO, "User '" + rec.username() + "' in the system");
+    }
+
+    public boolean active(UserRec rec){
+        return activeSessions.contains(rec.username());
+    }
+
+
+    @Override
+    public boolean logout(UserRec req) {
+        if (!active(req)) {
+            Server.logger.log(Level.INFO, "This user  " + req.username() + "isn't active" );
+            return false;
+        }
+        Server.logger.log(Level.INFO, "User was removed from active sessions");
+        return activeSessions.remove(req.username());
     }
 }
 

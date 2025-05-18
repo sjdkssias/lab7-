@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import org.apache.logging.log4j.Level;
 import se.ifmo.server.Server;
 import se.ifmo.server.database.DragonService;
 
@@ -46,7 +47,7 @@ public class CollectionManager {
     }
 
 
-    public boolean load() {
+    public synchronized boolean load() {
         try {
             List<Dragon> dragonDb = DragonService.getInctance().findAll();
             dragons.clear();
@@ -84,7 +85,7 @@ public class CollectionManager {
 
 
 
-    public List<Dragon> sortDragons() {
+    public synchronized List<Dragon> sortDragons() {
         return dragons.values().stream()
                 .sorted(Comparator.comparing(Dragon::getName))
                 .collect(Collectors.toList());
@@ -94,7 +95,7 @@ public class CollectionManager {
      *
      * @param dragon the dragon to add to the collection.
      */
-    public boolean add(Dragon dragon) {
+    public synchronized boolean add(Dragon dragon) {
         long generatedId = DragonService.getInctance().addDragon(dragon);
         if (generatedId != -1) {
             dragon.setId(generatedId);
@@ -104,12 +105,45 @@ public class CollectionManager {
         return false;
     }
 
+    public synchronized boolean update(long id, Dragon dragon, String ownerName){
+        if (dragons.get(id) == null) {
+            Server.logger.log(Level.WARN, "Update failed: dragon with id " + id + " not found.");
+            return false;
+        }
+        if (!ownerName.equals(dragons.get(id).getOwnerName())) {
+            Server.logger.log(Level.WARN, "Update failed: user " + ownerName + " tried to update dragon owned by " + dragon.getOwnerName());
+            return false;
+        }
+        dragon.setId(id);
+        dragon.setOwnerName(ownerName);
+        boolean updatedInDb = DragonService.getInctance().update(dragon);
+        if (updatedInDb) {
+            dragons.put(id, dragon);
+            return true;
+        } else {
+            Server.logger.log(Level.ERROR,"Update failed in DB for dragon id " + id);
+            return false;
+        }
+    }
+
+
+    public synchronized boolean insert(long id, Dragon dragon){
+        dragon.setId(id);
+        boolean insertedInDb = DragonService.getInctance().insert(dragon);
+
+        if (insertedInDb) {
+            dragons.put(id, dragon);
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * Retrieves the dragon with the highest ID in the collection.
      *
      * @return a list containing the dragon with the highest ID, or an empty list if the collection is empty.
      */
-    public List<Dragon> getMaxByKey() {
+    public synchronized List<Dragon> getMaxByKey() {
         if (dragons.isEmpty()) {
             return Collections.emptyList();
         }

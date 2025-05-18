@@ -1,5 +1,6 @@
 package se.ifmo.server.database;
 
+import org.apache.logging.log4j.Level;
 import se.ifmo.server.Server;
 import se.ifmo.server.models.classes.Coordinates;
 import se.ifmo.server.models.classes.Dragon;
@@ -36,6 +37,7 @@ public class DragonService implements DragonI {
         return dragons;
     }
 
+
     @Override
     public Dragon findByName(String ownerName) {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.FIND_BY_NAME)) {
@@ -54,7 +56,7 @@ public class DragonService implements DragonI {
     @Override
     public long addDragon(Dragon dragon) {
         if (dragon.getOwnerName() == null) {
-            Server.logger.error("Попытка вставить дракона без владельца");
+            Server.logger.log(Level.WARN, "trying to add a dragon without an owner");
             return -1;
         }
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.ADD_DRAGON)) {
@@ -92,6 +94,59 @@ public class DragonService implements DragonI {
             return false;
         }
     }
+
+    @Override
+    public boolean update(Dragon dragon) {
+        if (dragon.getOwnerName() == null) {
+            Server.logger.log(Level.WARN, "trying to add a dragon without an owner");
+            return false;
+        }
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.UPDATE_ID)) {
+            stmt.setString(1, dragon.getName());
+            stmt.setFloat(2, dragon.getCoordinates().getX());
+            stmt.setLong(3, dragon.getCoordinates().getY());
+            stmt.setBoolean(4, dragon.isSpeaking());
+            stmt.setString(5, dragon.getColor().name());
+            if (dragon.getCharacter() != null) {
+                stmt.setString(6, dragon.getCharacter().name());
+            } else {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            }
+            stmt.setFloat(7, dragon.getHead().getToothcount());
+            stmt.setLong(8, dragon.getId());
+            stmt.setString(9, dragon.getOwnerName());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Server.logger.error("update dragon error: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean insert(Dragon dragon) {
+        try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.INSERT)) {
+            stmt.setString(1, dragon.getName());
+            stmt.setFloat(2, dragon.getCoordinates().getX());
+            stmt.setLong(3, dragon.getCoordinates().getY());
+            stmt.setBoolean(4, dragon.isSpeaking());
+            stmt.setString(5, dragon.getColor().name());
+            if (dragon.getCharacter() != null) {
+                stmt.setString(6, dragon.getCharacter().name());
+            } else {
+                stmt.setNull(6, java.sql.Types.VARCHAR);
+            }
+            stmt.setFloat(7, dragon.getHead().getToothcount());
+            stmt.setLong(8, dragon.getId());
+            stmt.setString(9, dragon.getOwnerName());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            Server.logger.error("insert dragon error: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
 
     @Override
     public long removeUsersDragons(String ownerName) {

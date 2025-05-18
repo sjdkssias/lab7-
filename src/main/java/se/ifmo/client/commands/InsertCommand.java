@@ -34,29 +34,21 @@ public class InsertCommand extends Command {
      */
     @Override
     public Response execute(Request request)  {
-        // If there are no dragons in the request, return a message indicating the absence of dragons
         if (request.dragons() == null || request.dragons().isEmpty()) {
             return new Response("No dragons to add");
         }
 
         Long id;
 
-        // Try to parse the entered ID as a Long, catch any parsing errors
         try {
             id = Long.parseLong(request.args().get(0));
         } catch (NumberFormatException e) {
             return new Response("Invalid ID format. Please enter a valid integer.");
         }
-
-        // Check if the ID already exists in the collection
         if (CollectionManager.getInstance().containsId(id)) {
             return new Response("Dragon with this ID already exists!");
         }
-
-        // Add the dragon to the collection with the specified ID
-        CollectionManager.getInstance().getDragons().put(id, request.dragons().get(0));
-
-        // Return a response confirming the dragon was added with the specified ID
+        CollectionManager.getInstance().insert(id, request.dragons().get(0));
         return new Response("Dragon was saved to collection with ID: " + id);
     }
 }

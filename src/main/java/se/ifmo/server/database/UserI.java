@@ -9,4 +9,6 @@ public interface UserI {
     User findByName(String name);
 
     boolean login(UserRec req);
+
+    boolean logout(UserRec req);
 }
