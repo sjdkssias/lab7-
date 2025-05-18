@@ -26,7 +26,7 @@ public class Server implements AutoCloseable, Runnable {
     /** Default server port number. */
     private static final int PORT = Integer.parseInt(System.getenv("SERVER_PORT"));
     /** Buffer size for network operations. */
-    private static final int BUFFER_SIZE = 1500;
+    private static final int BUFFER_SIZE = 10000;
     /** Logger instance for server operations. */
     public static Logger logger = LogManager.getLogger(Server.class);
     /** Selector for managing multiple channels. */
@@ -123,10 +123,10 @@ public class Server implements AutoCloseable, Runnable {
             client.register(selector, SelectionKey.OP_READ);
             Socket socket = client.socket();
             SocketAddress remoteAddr = socket.getRemoteSocketAddress();
-            logger.info("Connected to: " + remoteAddr);
+            logger.log(Level.INFO, "Connected to: " + remoteAddr);
             selector.wakeup();
         } catch (IOException e){
-            logger.error("");
+            logger.log(Level.ERROR, "IOException with connection");
         }
 
 

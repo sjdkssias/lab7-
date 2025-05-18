@@ -20,6 +20,7 @@ public class AllCommands {
             new AddCommand(),
             new HelpCommand(),
             new ExitCommand(),
+            new UpdateIdCommand(),
             new FilterGreaterThanHeadCommand(),
             new HistoryCommand(),
             new InsertCommand(),

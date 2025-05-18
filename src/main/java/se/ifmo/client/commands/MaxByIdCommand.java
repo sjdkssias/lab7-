@@ -30,7 +30,6 @@ public class MaxByIdCommand extends Command {
     @Override
     public Response execute(Request request) {
 
-        // Get the dragon with the maximum ID value from the collection
         CollectionManager.getInstance().getMaxByKey();
 
         return new Response("Dragons with max id: " + CollectionManager.getInstance().getMaxByKey().toString());

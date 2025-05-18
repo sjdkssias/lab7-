@@ -12,6 +12,7 @@ import java.util.List;
  * This is the result returned from executing a commandName and can be sent back to the user.
  */
 public record Response(
+        boolean success,
         /**
          * The message accompanying the response, typically a status or output from the executed commandName.
          */
@@ -22,6 +23,7 @@ public record Response(
          * This could include dragons retrieved, added, or modified based on the executed commandName.
          */
         List<Dragon> dragons
+
 ) implements Serializable {
 
     /**
@@ -30,8 +32,8 @@ public record Response(
      * @param message The message to be included in the response.
      * @param dragons The list of dragons to be included in the response.
      */
-    public Response(String message, Dragon... dragons) {
-        this(message, List.of(dragons));
+    public Response(boolean success, String message, Dragon... dragons) {
+        this(success, message, List.of(dragons));
     }
 
     /**
@@ -39,8 +41,8 @@ public record Response(
      *
      * @param message The message to be included in the response.
      */
-    public Response(String message) {
-        this(message, Collections.emptyList());
+    public Response(boolean success, String message) {
+        this(success, message, Collections.emptyList());
     }
 
     /**
@@ -48,10 +50,9 @@ public record Response(
      *
      * @return An empty response.
      */
-    public static Response empty() {
-        return new Response(null);
+    public Response(String message){
+        this(true, message, Collections.emptyList());
     }
-
     /**
      * Retrieves the message from the response.
      *

@@ -13,10 +13,10 @@ public class LoginCommand extends Command{
     @Override
     public Response execute(Request request) {
         if (request.args().size() < 2){
-            return new Response("Fail to login, because u didn't write login and password");
+            return new Response(false, "Fail to login, because u didn't write login and password");
         }
-        UserService.getInstance().login(request.userRec());
-        return new Response("Successful login");
+        boolean status = UserService.getInstance().login(request.userRec());
+        return new Response(status, status ? "Successful login" : "Failed to login");
 
     }
 }

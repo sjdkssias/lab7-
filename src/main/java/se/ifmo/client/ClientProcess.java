@@ -63,10 +63,12 @@ public class ClientProcess {
                     continue;
                 }
                 client.sendRequest(req);
-                client.receiveResponse();
+                Response resp = client.receiveResponse();
                 if ((req.commandName().equals(new LoginCommand().getName()) || req.commandName().equals(new RegisterCommand().getName()))) {
-                    this.currentUser = req.userRec();
-                    console.writeln("User '" + req.userRec().username() + "' is now authenticated.");
+                    if (resp.success()) {
+                        this.currentUser = req.userRec();
+                        console.writeln("User '" + currentUser.username() + "' is now authenticated.");
+                    }
                 }
 
             } catch (IOException ioEx) {
