@@ -16,7 +16,7 @@ public class RegisterCommand extends Command {
             return new Response(false, "Failed to register, please write LOGIN AND PASSWORD" + request.args());
         }
         boolean status = UserService.getInstance().register(request.userRec());
-        return new Response(status, status ? "Successful register. You can use console app" : "Failed to register. Try to use another name");
+        return new Response(status, status ? "Successful register." : "Failed to register. Try to use another name");
 
     }
 }

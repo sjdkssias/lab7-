@@ -16,7 +16,7 @@ public class Router {
         boolean isAuthCommand = AuthCommands.AUTHCOMMANDS.stream()
                 .anyMatch(authCmd -> authCmd.getName().equalsIgnoreCase(req.commandName()));
         if (!isAuthCommand && req.userRec() == null){
-            return new Response("You must to register or login.");
+            return new Response("You must login.");
         }
         return AllCommands.ALLCOMANDS.stream()
                 .filter(command -> command.getName().equals(req.commandName()))

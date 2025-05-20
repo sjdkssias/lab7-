@@ -32,7 +32,6 @@ public class DragonService implements DragonI {
             }
         } catch (SQLException e) {
             Server.logger.error("Error with getting dragons from db" + e.getMessage(), e);
-            System.out.println("huinia");
         }
         return dragons;
     }
@@ -48,7 +47,7 @@ public class DragonService implements DragonI {
                 }
             }
         } catch (SQLException e) {
-            Server.logger.error("find by id error: " + e.getMessage(), e);
+            Server.logger.error("find by name error: " + e.getMessage(), e);
         }
         return null;
     }
@@ -77,7 +76,6 @@ public class DragonService implements DragonI {
             if (rs.next()) return rs.getLong(1);
             return -1;
         } catch (SQLException e) {
-            System.out.println("add dragon to the db error:" + e.getMessage());
             Server.logger.error("add dragon to the db error: " + e.getMessage(), e);
             return -1;
         }

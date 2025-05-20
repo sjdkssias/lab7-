@@ -109,14 +109,17 @@ public class Server implements AutoCloseable, Runnable {
                 logger.info("Acceptable key detected. Accepting connection...");
                 acceptConnection();
             } else if (key.isReadable()) {
-                synchronized (key) {
-                    try {
-                        readKey(key);
-                    } catch (Exception e) {
-                        logger.error("Read error", e);
-                        closeConnection(key);
+                readerPool.submit(() -> {
+                    synchronized (key) {
+                        try {
+                            readKey(key);
+                        } catch (Exception e) {
+                            logger.error("Read error", e);
+                            closeConnection(key);
+                        }
                     }
-                }
+                });
+
             } else if (key.isWritable()) {
                 writePool.submit(() -> {
                     synchronized (key) {
@@ -194,8 +197,7 @@ public class Server implements AutoCloseable, Runnable {
 
                                 writePool.submit(() -> {
                                     try {
-                                        byte[] respBytes = SerializationUtils.serialize(response);
-                                        ByteBuffer respBuffer = ByteBuffer.wrap(respBytes);
+                                        ByteBuffer respBuffer = ByteBuffer.wrap(SerializationUtils.serialize(response));
 
                                         synchronized (key) {
                                             if (key.isValid()) {

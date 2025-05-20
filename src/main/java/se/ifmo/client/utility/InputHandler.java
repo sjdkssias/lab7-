@@ -29,11 +29,11 @@ public class InputHandler {
     public static Dragon get(Console console, UserRec currentUser) throws InterruptedException {
         Dragon dragon = new Dragon();
 
-        while (!input("name", dragon::setName, Function.identity(), console)) {}
+        while (!input("name", dragon::setName, Function.identity(), console));
 
         Coordinates coordinates = new Coordinates();
-        while (!input("coordinate x", coordinates::setX, Float::parseFloat, console)) {};
-        while (!input("coordinate y", coordinates::setY, Long::valueOf, console)) {};
+        while (!input("coordinate x", coordinates::setX, Float::parseFloat, console));
+        while (!input("coordinate y", coordinates::setY, Long::valueOf, console));
         dragon.setCoordinates(coordinates);
 
         while (!input("speaking", dragon::setSpeaking, value -> {
@@ -43,9 +43,9 @@ public class InputHandler {
             return Boolean.valueOf(value);
         }, console));
 
-        while (!input("color", dragon::setColor, Color::valueOf, console)) {};
+        while (!input("color", dragon::setColor, Color::valueOf, console));
 
-        while (!input("character", dragon::setCharacter, DragonCharacter::valueOf, console)) {};
+        while (!input("character", dragon::setCharacter, DragonCharacter::valueOf, console));
 
         DragonHead head = new DragonHead();
         while (!input("dragon head", head::setToothcount, Float::parseFloat, console));
@@ -85,8 +85,11 @@ public class InputHandler {
             return true;
         } catch (InterruptedException e) {
             throw e;
+        } catch (IllegalArgumentException e){
+            console.writeln(e.getMessage());
+            return false;
         } catch (Exception ex) {
-            console.write(ex.getMessage() + System.lineSeparator());
+            console.writeln(ex.getMessage());
             return false;
         }
     }

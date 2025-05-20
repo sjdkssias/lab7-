@@ -65,10 +65,9 @@ public class ClientProcess {
                 }
                 client.sendRequest(req);
                 Response resp = client.receiveResponse();
-                if ((req.commandName().equals(new LoginCommand().getName()) || req.commandName().equals(new RegisterCommand().getName()))) {
+                if ((req.commandName().equals(new LoginCommand().getName()))) {
                     if (resp.success()) {
                         this.currentUser = req.userRec();
-                        console.writeln("User '" + currentUser.username() + "' is now authenticated.");
                     }
                 }
                 if ((req.commandName().equals(new LogoutCommand().getName()))){
@@ -116,6 +115,10 @@ public class ClientProcess {
         }
 
         try {
+            if (currentUser == null) {
+                console.writeln("You must login.");
+                return null;
+            }
             if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(console, currentUser));
         } catch (InterruptedException e) {
             Server.logger.error("Command Interrupt");
