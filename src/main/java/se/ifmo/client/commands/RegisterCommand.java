@@ -12,7 +12,6 @@ public class RegisterCommand extends Command {
     @Override
     public Response execute(Request request) {
         if (request.args().size() < 2) {
-
             return new Response(false, "Failed to register, please write LOGIN AND PASSWORD" + request.args());
         }
         boolean status = UserService.getInstance().register(request.userRec());

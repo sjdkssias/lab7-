@@ -1,0 +1,66 @@
+/* Общий стиль для всего окна (корневого элемента) */
+.root {
+    -fx-background-color: #1E1E1E; /* Очень темный фон, как на картинке */
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Контейнер для самой формы логина */
+.register-form-container {
+    -fx-background-color: #424242; /* Темно-серый цвет для "карточки" */
+    -fx-background-radius: 20;    /* Скругление углов */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 15, 0, 0, 7); /* Тень */
+    -fx-padding: 40;
+}
+.header-label {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* Стиль для маленьких подписей "Username", "Password" */
+.field-label {
+    -fx-text-fill: #B0B0B0; /* Светло-серый текст */
+    -fx-font-size: 11px;
+}
+
+/* Стиль для полей ввода */
+.form-text-field {
+    -fx-background-color: #333333;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #757575; /* Цвет для подсказки (prompt text) */
+    -fx-font-size: 14px;
+    -fx-pref-height: 40px;
+}
+
+.register-button {
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-pref-height: 40px;
+    -fx-cursor: hand; /* Курсор в виде руки при наведении */
+}
+
+.register-button:hover {
+    -fx-background-color: #1a1a1a; /* Немного светлее при наведении */
+}
+
+/* Стиль для метки-ошибки */
+.status-label {
+    -fx-text-fill: #FF5252; /* Ярко-красный для ошибок */
+    -fx-font-size: 12px;
+}
+
+/* Стиль для метки "Register here" */
+.login-label {
+    -fx-text-fill: #B0B0B0;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.login-label:hover {
+    -fx-underline: true; /* Подчеркивание при наведении */
+}

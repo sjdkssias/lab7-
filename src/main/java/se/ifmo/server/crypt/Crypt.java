@@ -30,6 +30,4 @@ public final class Crypt {
         }
         return hexString.toString();
     }
-
-
 }

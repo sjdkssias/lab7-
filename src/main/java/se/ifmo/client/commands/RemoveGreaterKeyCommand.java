@@ -2,13 +2,7 @@ package se.ifmo.client.commands;
 
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
-import se.ifmo.client.console.Console;
 import se.ifmo.server.collectionManagement.CollectionManager;
-import se.ifmo.server.models.classes.Dragon;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 
 /**
  * The {@link RemoveGreaterKeyCommand} class represents a commandName that removes all dragons from the collection

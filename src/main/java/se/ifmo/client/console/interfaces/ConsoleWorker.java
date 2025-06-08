@@ -15,7 +15,6 @@ public interface ConsoleWorker<T> extends AutoCloseable {
      * @return the data read from the console.
      * @throws RuntimeException if there is an error during reading.
      */
-    T read();
 
     /**
      * Writes the specified value to the console or output destination.

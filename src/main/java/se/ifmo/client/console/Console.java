@@ -28,7 +28,6 @@ public final class Console implements ConsoleWorker<String> {
      * @return the line of input entered by the user.
      * @throws RuntimeException if there is an error reading input from the console.
      */
-    @Override
     public String read() {
         try {
             return reader.readLine();
@@ -76,6 +75,4 @@ public final class Console implements ConsoleWorker<String> {
         reader.close();
         writer.close();
     }
-
-
 }

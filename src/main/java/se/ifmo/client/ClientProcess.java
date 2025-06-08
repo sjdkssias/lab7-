@@ -26,21 +26,16 @@ import static se.ifmo.client.commands.AllCommands.ALLCOMANDS;
  */
 public class ClientProcess {
 
-    /** Console interface for user I/O operations. */
-    private Console console;
-
-    /** Client instance for server communication. */
     private Client client;
     private UserRec currentUser;
+    private Console console;
     /**
-     * Constructs a ClientProcess with the specified console and client.
-     *
-     * @param console the console used for input/output operations
+
      * @param client the client instance handling server communication
      */
-    public ClientProcess(Console console, Client client) {
-        this.console = console;
+    public ClientProcess(Client client, Console console) {
         this.client = client;
+        this.console = console;
     }
 
     /**
@@ -75,11 +70,9 @@ public class ClientProcess {
                 }
 
             } catch (IOException ioEx) {
-                console.writeln("Connection error: " + ioEx.getMessage());
                 try {
                     client.reconnect();
                 } catch (IOException e) {
-                    console.writeln("Failed to reconnect");
                     break;
                 }
             }
@@ -97,7 +90,6 @@ public class ClientProcess {
     public Request createRequest(String input) {
 
         if (input.equalsIgnoreCase("exit")) {
-            console.writeln("Exiting");
             System.exit(0);
         }
 
@@ -108,7 +100,6 @@ public class ClientProcess {
         List<Dragon> dragons = null;
         if (commandName.equals(new RegisterCommand().getName()) || commandName.equals(new LoginCommand().getName())) {
             if (parts.length < 3) {
-                console.writeln("Please write command with correct count of args");
                 return null;
             }
             return new Request(commandName, List.of(parts[1], parts[2]), null, new UserRec(parts[1], parts[2]));
@@ -116,10 +107,9 @@ public class ClientProcess {
 
         try {
             if (currentUser == null) {
-                console.writeln("You must login.");
                 return null;
             }
-            if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(console, currentUser));
+            if (requiresDragons(commandName)) dragons = List.of(InputHandler.get(new Console(), currentUser));
         } catch (InterruptedException e) {
             Server.logger.error("Command Interrupt");
             return null;
@@ -146,7 +136,7 @@ public class ClientProcess {
      * @return trimmed input string from the console
      */
     private String readCommandWithArgs() {
-        return console.read().trim();
+        return console.read();
     }
 
     /**
@@ -166,12 +156,10 @@ public class ClientProcess {
         private void handleInput(String input) {
             String[] parts = input.split("\\s+", 2);
             if (parts.length < 2) {
-                console.writeln("No script file specified.");
                 return;
             }
             String scriptPath = parts[1];
             if (currentDepth >= maxRecursionDepth) {
-                console.writeln("Maximum recursion depth (" + maxRecursionDepth + ") exceeded.");
                 return;
             }
             executingScripts.add(scriptPath);
@@ -184,12 +172,10 @@ public class ClientProcess {
                                 client.sendRequest(createRequest(line));
                                 client.receiveResponse();
                             } catch (IOException e) {
-                                console.writeln("Error handling line: " + e.getMessage());
                             }
                         });
 
             } catch (IOException e) {
-                console.writeln("Error reading script file: " + e.getMessage());
             }
         }
     }

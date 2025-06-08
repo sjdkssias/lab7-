@@ -194,23 +194,14 @@ public class Server implements AutoCloseable, Runnable {
                         processorPool.submit(() -> {
                             try {
                                 Response response = Router.route(request);
-
-                                writePool.submit(() -> {
-                                    try {
-                                        ByteBuffer respBuffer = ByteBuffer.wrap(SerializationUtils.serialize(response));
-
-                                        synchronized (key) {
-                                            if (key.isValid()) {
-                                                key.attach(respBuffer);
-                                                key.interestOps(SelectionKey.OP_WRITE);
-                                                selector.wakeup();
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        logger.error("Error during response serialization", e);
-                                        closeConnection(key);
+                                ByteBuffer respBuffer = ByteBuffer.wrap(SerializationUtils.serialize(response));
+                                synchronized (key) {
+                                    if (key.isValid()) {
+                                        key.attach(respBuffer);
+                                        key.interestOps(SelectionKey.OP_WRITE);
+                                        selector.wakeup();
                                     }
-                                });
+                                }
                             } catch (Exception e) {
                                 logger.error("Error during request processing", e);
                                 closeConnection(key);

@@ -2,11 +2,7 @@ package se.ifmo.client.commands;
 
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
-import se.ifmo.client.chat.UserRec;
-import se.ifmo.client.console.Console;
 import se.ifmo.server.collectionManagement.CollectionManager;
-
-import java.util.List;
 
 /**
  * The {@link RemoveKeyCommand} class represents a commandName that removes all elements from the collection

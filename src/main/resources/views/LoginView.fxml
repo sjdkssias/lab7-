@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<!-- Корневой элемент StackPane для центрирования формы -->
+<StackPane fx:id="rootPane" prefHeight="600.0" prefWidth="800.0"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="se.ifmo.client.ui.controllers.LoginController"
+           stylesheets="@/styles/loginstyle.css">
+    <!-- Контейнер для формы, который мы стилизуем -->
+    <VBox alignment="TOP_CENTER" maxHeight="450.0" maxWidth="350.0" spacing="10.0" styleClass="login-form-container">
+        <children>
+            <!-- Заголовок -->
+            <Label styleClass="header-label" text="Welcome Back">
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Группа для имени пользователя -->
+            <VBox spacing="5.0">
+                <children>
+                    <Label styleClass="field-label" text="Username" />
+                    <TextField fx:id="usernameField" promptText="Enter your username" styleClass="form-text-field" />
+                </children>
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </VBox>
+
+            <!-- Группа для пароля -->
+            <VBox spacing="5.0">
+                <children>
+                    <Label styleClass="field-label" text="Password" />
+                    <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="form-text-field" />
+                </children>
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </VBox>
+
+            <!-- Кнопка входа -->
+            <Button fx:id="loginButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onLoginButtonClick" styleClass="login-button" text="Login">
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </Button>
+
+            <!-- Метка для статуса -->
+            <Label fx:id="statusLabel" styleClass="status-label" />
+
+            <!-- Метка для регистрации -->
+            <Label fx:id="registerLabel" onMouseClicked="#onRegisterLabelClick" styleClass="register-label" text="Don't have an account? Register here">
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Label>
+        </children>
+    </VBox>
+</StackPane>

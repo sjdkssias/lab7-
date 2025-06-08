@@ -1,5 +1,7 @@
 plugins {
     id("java")
+    id("application")
+    id("org.openjfx.javafxplugin") version "0.0.13"
 }
 
 group = "org.example"
@@ -9,6 +11,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.openjfx:javafx-controls:24.0.1")
+    implementation("org.openjfx:javafx-fxml:24.0.1")
     implementation("org.postgresql:postgresql:42.7.5")
     implementation("org.apache.logging.log4j:log4j-api:2.20.0")
     implementation("org.apache.logging.log4j:log4j-core:2.20.0")
@@ -22,6 +26,15 @@ dependencies {
     implementation("io.vertx:vertx-core:4.5.3")
 }
 
+javafx {
+    version = "23.0.1"
+    modules = listOf("javafx.controls", "javafx.fxml")
+}
+
+
+application {
+    mainClass.set("se.ifmo.client.ClientMain")
+}
 tasks.compileJava {
     options.release.set(21)
 }

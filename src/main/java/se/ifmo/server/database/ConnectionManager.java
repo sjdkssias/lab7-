@@ -3,7 +3,6 @@ package se.ifmo.server.database;
 
 import se.ifmo.server.Server;
 
-import javax.sql.rowset.serial.SerialRef;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,7 +22,7 @@ public class ConnectionManager {
             System.out.println("Database connection OK");
         } catch (ClassNotFoundException | SQLException e){
             Server.logger.error(e);
-            System.exit(1);//надо обработать
+            System.exit(1);
         }
     }
 

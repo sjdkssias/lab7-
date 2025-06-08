@@ -4,7 +4,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.console.Console;
-
 import java.io.*;
 import java.net.*;
 
@@ -21,25 +20,24 @@ public class Client implements AutoCloseable {
 
     /** Socket connection to the server. */
     private Socket socket;
-    /** Console interface for user I/O operations. */
-    private Console console;
     /** Input stream for receiving server responses. */
     private InputStream in;
     /** Connection status flag. */
     private boolean isConnected;
     /** Output stream for sending requests to the server. */
     private OutputStream out;
-
-    /**
-     * Constructs a new client instance with the specified console.
-     *
-     * @param console the console used for input/output operations.
-     */
-    public Client(Console console) {
-        this.console = console;
+    private static Client instance;
+    public Client() {
         init();
+
     }
 
+    public static synchronized Client getInstance() {
+        if (instance == null) {
+            instance = new Client();
+        }
+        return instance;
+    }
     /**
      * Initializes the connection to the server.
      * Sets up the socket, input, and output streams.
@@ -51,9 +49,7 @@ public class Client implements AutoCloseable {
             out = socket.getOutputStream();
             in = socket.getInputStream();
             isConnected = true;
-            console.writeln("Successfully connected");
         } catch (UnknownHostException e) {
-            console.writeln("Unknown host to connect: " + e.getMessage());
             isConnected = false;
         } catch (IOException e) {
             isConnected = false;
@@ -69,11 +65,10 @@ public class Client implements AutoCloseable {
      */
     public void start() throws IOException, InterruptedException {
         while (!isConnected) {
-            console.writeln("Connecting to the server...");
             reconnect();
             Thread.sleep(1000);
         }
-        (new ClientProcess(console, this)).startProcess();
+        (new ClientProcess(this, new Console())).startProcess();
     }
 
     /**
@@ -82,12 +77,13 @@ public class Client implements AutoCloseable {
      * @param request the request object to be sent.
      * @throws IOException if the connection is broken or I/O fails.
      */
-    protected void sendRequest(Request request) throws IOException {
+    protected Response sendRequest(Request request) throws IOException {
         if (!isConnected) {
             reconnect();
         }
         out.write(SerializationUtils.serialize(request));
         out.flush();
+        return receiveResponse();
     }
 
     /**
@@ -101,8 +97,6 @@ public class Client implements AutoCloseable {
         if (in.read(buf) == -1) {
             throw new IOException("Connection closed by server");
         }
-        Response response = SerializationUtils.deserialize(buf);
-        console.writeln(response.getMessage());
         return SerializationUtils.deserialize(buf);
     }
 
@@ -114,7 +108,7 @@ public class Client implements AutoCloseable {
     protected void reconnect() throws IOException {
         init();
         if (isConnected) {
-            console.writeln("Client was reconnected to the server");
+            System.out.println("Client was reconnected to the server");
         }
     }
 
@@ -130,7 +124,7 @@ public class Client implements AutoCloseable {
             out.close();
             in.close();
             socket.close();
-            console.writeln("Connection was closed");
+            System.out.println("Connection was closed");
         }
     }
 }
