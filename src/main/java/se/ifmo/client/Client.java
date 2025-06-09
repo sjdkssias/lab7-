@@ -29,7 +29,6 @@ public class Client implements AutoCloseable {
     private static Client instance;
     public Client() {
         init();
-
     }
 
     public static synchronized Client getInstance() {
@@ -77,7 +76,7 @@ public class Client implements AutoCloseable {
      * @param request the request object to be sent.
      * @throws IOException if the connection is broken or I/O fails.
      */
-    protected Response sendRequest(Request request) throws IOException {
+    public Response sendRequest(Request request) throws IOException {
         if (!isConnected) {
             reconnect();
         }

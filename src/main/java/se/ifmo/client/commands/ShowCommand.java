@@ -3,6 +3,11 @@ package se.ifmo.client.commands;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.server.collectionManagement.CollectionManager;
+import se.ifmo.server.models.classes.Dragon;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The {@link ShowCommand} class represents a commandName that displays information about the current collection.
@@ -29,21 +34,12 @@ public class ShowCommand extends Command {
     @Override
     public Response execute(Request request) {
         CollectionManager collectionManager = CollectionManager.getInstance();
+        List<Dragon> dragons = new ArrayList<>(collectionManager.getDragons().values());
 
-        // Check if the collection is empty
-        if (collectionManager.getInstance().getDragons().isEmpty()) {
-            return new Response("Your collection is clear");
+        if (dragons.isEmpty()) {
+            return new Response(true, "Your collection is clear", Collections.emptyList());
         }
 
-        // Build the response string for the collection elements
-        StringBuilder result = new StringBuilder("Collection elements:\n");
-        collectionManager.getDragons().forEach((id, dragon) ->
-                result.append("ID: ").append(id)
-                        .append(", ").append(dragon)
-                        .append("\n")
-        );
-        CollectionManager.getInstance().sortDragons();
-        // Return the collection information as a response
-        return new Response(result.toString());
+        return new Response(true, "Collection was received", dragons);
     }
 }

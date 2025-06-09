@@ -28,7 +28,9 @@ public class DragonService implements DragonI {
         try (PreparedStatement stmt = ConnectionManager.getInstance().prepare(DragonSQL.FIND_ALL);
              ResultSet dragonResult = stmt.executeQuery()) {
             while (dragonResult.next()) {
-                dragons.add(dragonMap(dragonResult));
+                Dragon dragon = dragonMap(dragonResult);
+                Server.logger.log(Level.INFO, "Найден дракон: " + dragon.getName()); // <-- Лог
+                dragons.add(dragon);
             }
         } catch (SQLException e) {
             Server.logger.error("Error with getting dragons from db" + e.getMessage(), e);

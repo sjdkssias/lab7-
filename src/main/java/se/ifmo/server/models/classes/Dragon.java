@@ -7,6 +7,7 @@ import se.ifmo.server.models.enums.DragonCharacter;
 import se.ifmo.server.models.interfaces.Validatable;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Data
@@ -41,7 +42,7 @@ public class Dragon implements Comparable<Dragon>, Validatable, Serializable {
      */
     @NonNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private java.time.LocalDate creationDate = java.time.LocalDate.now();
+    private LocalDateTime creationDate = LocalDateTime.now(); ;
 
     /**
      * Whether the dragon is capable of speaking.

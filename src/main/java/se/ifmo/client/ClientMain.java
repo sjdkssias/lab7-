@@ -3,7 +3,6 @@ package se.ifmo.client;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import se.ifmo.client.ui.controllers.SceneManager;
-import se.ifmo.client.console.Console;
 
 
 public class ClientMain extends Application{
@@ -11,7 +10,7 @@ public class ClientMain extends Application{
     @Override
     public void start(Stage stage) throws Exception {
         SceneManager.setStage(stage);
-        SceneManager.switchTo("/views/MainF.fxml");
+        SceneManager.switchTo("/views/StartView.fxml");
         stage.setTitle("Collection app");
         stage.show();
 

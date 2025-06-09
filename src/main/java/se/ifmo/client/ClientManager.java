@@ -5,10 +5,10 @@ import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.UserRec;
 import se.ifmo.client.commands.LoginCommand;
 import se.ifmo.client.commands.RegisterCommand;
+import se.ifmo.client.commands.ShowCommand;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ClientManager {
@@ -45,4 +45,14 @@ public class ClientManager {
         }
         return response;
     }
+
+    public Response showAllDragons() throws IOException {
+        Request request = new Request(new ShowCommand().getName(), null, null, getCurrentUser());
+        return client.sendRequest(request);
+    }
+
+    private UserRec getCurrentUser(){
+        return currentUser;
+    }
+    
 }

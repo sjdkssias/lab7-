@@ -47,12 +47,11 @@ public class LoginController {
             if (response.success()) {
                 statusLabel.setTextFill(Color.GREEN);
                 statusLabel.setText("Success enter!");
-                SceneManager.switchTo("/views/MainF.fxml");
+                SceneManager.switchTo("/views/MainView.fxml");
             } else {
                 statusLabel.setTextFill(Color.RED);
                 statusLabel.setText("Entering error: " + response.message());
             }
-            loginButton.setDisable(false);
         });
 
         loginTask.setOnFailed(event -> {

@@ -35,20 +35,18 @@ public class RegisterController {
                 return ClientManager.getInstance().register(username, password);
             }
         };
-
         regTask.setOnSucceeded(event -> {
             Response response = regTask.getValue();
             if (response.success()) {
                 statusLabel.setTextFill(Color.GREEN);
                 statusLabel.setText("Success enter!");
-                SceneManager.switchTo("/views/MainF.fxml");
+                SceneManager.switchTo("/views/LoginView.fxml");
             } else {
                 statusLabel.setTextFill(Color.RED);
                 statusLabel.setText("Entering error: " + response.message());
             }
             registerButton.setDisable(false);
         });
-
         regTask.setOnFailed(event -> {
             Throwable e = regTask.getException();
             statusLabel.setTextFill(Color.RED);
