@@ -3,6 +3,7 @@ package se.ifmo.client.commands;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.server.collectionManagement.CollectionManager;
+import se.ifmo.server.models.classes.Dragon;
 
 /**
  * The {@link AddCommand} class represents a commandName that adds a dragon to the collection.
@@ -36,7 +37,9 @@ public class AddCommand extends Command {
         if (request.dragons() == null || request.dragons().isEmpty()) {
             return new Response("No dragons to add");
         }
-        CollectionManager.getInstance().add(request.dragons().get(0));
+        Dragon dragonFromClient = request.dragons().get(0);
+        dragonFromClient.setOwnerName(request.userRec().username());
+        CollectionManager.getInstance().add(dragonFromClient);
         return new Response("Dragon was saved to collection");
     }
 }

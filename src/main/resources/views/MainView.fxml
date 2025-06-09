@@ -29,7 +29,7 @@
             <!-- Панель с кнопками -->
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                 <children>
-                    <Button onAction="#refreshCollection" text="Обновить коллекцию" styleClass="action-button" />
+                    <Button onAction="#updateCollection" text="Обновить коллекцию" styleClass="action-button" />
                     <Button onAction="#addDragon" text="Добавить дракона" styleClass="action-button" />
                     <Button onAction="#editDragon" text="Изменить выбранного" styleClass="action-button" />
                     <Button onAction="#deleteDragon" text="Удалить выбранного" styleClass="action-button" />

@@ -7517,3 +7517,135 @@ java.net.SocketException: Connection reset
 2025-06-09 22:18:28 INFO  Server - User '333' in the system
 2025-06-09 22:18:28 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
 2025-06-09 22:18:28 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:35:48 INFO  Server - Server is starting successfully
+2025-06-09 22:35:56 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 22:35:56 INFO  Server - Connected to: /127.0.0.1:58988
+2025-06-09 22:36:00 INFO  Server - User '333' in the system
+2025-06-09 22:36:00 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:36:00 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:39:08 INFO  Server - Server is starting successfully
+2025-06-09 22:39:13 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 22:39:13 INFO  Server - Connected to: /127.0.0.1:59010
+2025-06-09 22:39:23 INFO  Server - User '333' in the system
+2025-06-09 22:39:23 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:39:23 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:40:50 INFO  Server - Server is starting successfully
+2025-06-09 22:40:53 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 22:40:53 INFO  Server - Connected to: /127.0.0.1:59022
+2025-06-09 22:40:57 INFO  Server - User '333' in the system
+2025-06-09 22:40:57 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:40:57 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:41:54 INFO  Server - Server is starting successfully
+2025-06-09 22:42:06 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 22:42:06 INFO  Server - Connected to: /127.0.0.1:59042
+2025-06-09 22:42:10 INFO  Server - User '333' in the system
+2025-06-09 22:42:10 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:42:10 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:43:34 INFO  Server - Server is starting successfully
+2025-06-09 22:43:37 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 22:43:37 INFO  Server - Connected to: /127.0.0.1:59053
+2025-06-09 22:43:47 INFO  Server - User '333' in the system
+2025-06-09 22:43:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 22:43:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:07:30 INFO  Server - Server is starting successfully
+2025-06-09 23:07:50 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 23:07:50 INFO  Server - Connected to: /127.0.0.1:55559
+2025-06-09 23:08:03 INFO  Server - User '333' in the system
+2025-06-09 23:08:03 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:08:03 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:08:15 WARN  Server - trying to add a dragon without an owner
+2025-06-09 23:22:52 INFO  Server - Server is starting successfully
+2025-06-09 23:23:09 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 23:23:09 INFO  Server - Connected to: /127.0.0.1:55666
+2025-06-09 23:23:14 INFO  Server - User '333' in the system
+2025-06-09 23:23:14 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:23:14 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:34:51 INFO  Server - Server is starting successfully
+2025-06-09 23:34:51 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 23:34:51 INFO  Server - Connected to: /127.0.0.1:57253
+2025-06-09 23:34:58 INFO  Server - User '333' in the system
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 333
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 11
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 21321
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 123123123
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: sdjsdjs
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 59050565
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 23
+2025-06-09 23:34:58 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:36:35 INFO  Server - Server is starting successfully
+2025-06-09 23:36:51 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-09 23:36:51 INFO  Server - Connected to: /127.0.0.1:57269
+2025-06-09 23:36:56 INFO  Server - User '333' in the system
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 333
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 11
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 21321
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 123123123
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: sdjsdjs
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 59050565
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 23
+2025-06-09 23:36:56 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 00:55:32 INFO  Server - Server is starting successfully
+2025-06-10 00:55:38 INFO  Server - Server is starting successfully
+2025-06-10 00:55:39 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-10 00:55:39 INFO  Server - Connected to: /127.0.0.1:61112
+2025-06-10 00:55:48 INFO  Server - User '333' in the system
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 333
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 11
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 21321
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 123123123
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: sdjsdjs
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 59050565
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 23
+2025-06-10 00:55:48 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:01:51 INFO  Server - Server is starting successfully
+2025-06-10 01:01:54 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-10 01:01:54 INFO  Server - Connected to: /127.0.0.1:61148
+2025-06-10 01:01:59 INFO  Server - User '333' in the system
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 333
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 11
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 21321
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 123123123
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 111
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: sdjsdjs
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 59050565
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 23
+2025-06-10 01:01:59 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:06:40 INFO  Server - Server is starting successfully
+2025-06-10 01:06:40 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-10 01:06:40 INFO  Server - Connected to: /127.0.0.1:61172
+2025-06-10 01:06:46 INFO  Server - User '333' in the system
+2025-06-10 01:06:46 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:06:46 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:10:11 INFO  Server - Server is starting successfully
+2025-06-10 01:10:13 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-10 01:10:13 INFO  Server - Connected to: /127.0.0.1:61194
+2025-06-10 01:10:18 INFO  Server - User '333' in the system
+2025-06-10 01:10:19 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:10:19 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:13:32 INFO  Server - Server is starting successfully
+2025-06-10 01:13:34 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-10 01:13:34 INFO  Server - Connected to: /127.0.0.1:61236
+2025-06-10 01:13:47 INFO  Server - User '333' in the system
+2025-06-10 01:13:47 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:13:47 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:19:59 INFO  Server - Server is starting successfully
+2025-06-10 01:19:59 INFO  Server - Acceptable key detected. Accepting connection...
+2025-06-10 01:19:59 INFO  Server - Connected to: /127.0.0.1:61292
+2025-06-10 01:20:11 INFO  Server - User '333' in the system
+2025-06-10 01:20:11 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1
+2025-06-10 01:20:11 INFO  Server - РќР°Р№РґРµРЅ РґСЂР°РєРѕРЅ: 1

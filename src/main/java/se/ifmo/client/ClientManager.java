@@ -3,12 +3,12 @@ package se.ifmo.client;
 import se.ifmo.client.chat.Request;
 import se.ifmo.client.chat.Response;
 import se.ifmo.client.chat.UserRec;
-import se.ifmo.client.commands.LoginCommand;
-import se.ifmo.client.commands.RegisterCommand;
-import se.ifmo.client.commands.ShowCommand;
+import se.ifmo.client.commands.*;
+import se.ifmo.server.models.classes.Dragon;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ClientManager {
@@ -54,5 +54,35 @@ public class ClientManager {
     private UserRec getCurrentUser(){
         return currentUser;
     }
-    
+
+    public Response addDragon(Dragon dragon) throws IOException {
+        List<Dragon> dragonList = Collections.singletonList(dragon);
+        Request request = new Request(new AddCommand().getName(), null, dragonList, getCurrentUser());
+        return client.sendRequest(request);
+    }
+
+    public Response removeKey(long id) throws IOException{
+        List<String> args = Collections.singletonList(String.valueOf(id));
+        Request request = new Request(new RemoveKeyCommand().getName(), args, null, getCurrentUser());
+        return client.sendRequest(request);
+    }
+
+    public Response removeGreater(long id) throws IOException {
+        List<String> args = Collections.singletonList(String.valueOf(id));
+        Request request = new Request(new RemoveGreaterKeyCommand().getName(), args, null, getCurrentUser());
+        return client.sendRequest(request);
+    }
+
+    public Response removeLower(long id) throws IOException {
+        List<String> args = Collections.singletonList(String.valueOf(id));
+        Request request = new Request(new RemoveLowerKeyCommand().getName(), args, null, getCurrentUser());
+        return client.sendRequest(request);
+    }
+
+    public Response filterGreaterThanHead(float toothCount) throws IOException {
+        List<String> args = Collections.singletonList(String.valueOf(toothCount));
+        Request request = new Request(new FilterGreaterThanHeadCommand().getName(), args, null, getCurrentUser());
+        return client.sendRequest(request);
+    }
+
 }

@@ -1,0 +1,79 @@
+/* Стиль для фона окна */
+.form-background {
+    -fx-background-color: #2D2D2D;
+    -fx-padding: 25px;
+}
+
+/* Стиль для заголовка формы */
+.form-header {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* Стиль для обычных меток (Имя:, Координата X: и т.д.) */
+.form-label {
+    -fx-text-fill: #E0E0E0;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Общий стиль для всех полей ввода */
+.text-field, .choice-box {
+    -fx-background-color: #4A4A4A;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-pref-height: 35px;
+}
+
+.choice-box .label {
+    -fx-text-fill: white;
+}
+
+/* Стиль для CheckBox */
+.check-box .box {
+    -fx-background-color: #4A4A4A;
+    -fx-border-color: #888888;
+    -fx-border-radius: 3;
+}
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+.check-box {
+    -fx-text-fill: white;
+}
+
+/* Стиль для метки-ошибки */
+.status-label {
+    -fx-text-fill: #FF6B6B; /* Более мягкий красный */
+    -fx-font-size: 12px;
+    -fx-min-height: 30px; /* Резервируем место под ошибки */
+}
+
+/* Стиль для основной кнопки "Сохранить" */
+.save-button {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+}
+.save-button:hover {
+    -fx-background-color: #008CDE;
+}
+
+.cancel-button {
+    -fx-background-color: #5A5A5A;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+}
+.cancel-button:hover {
+    -fx-background-color: #6A6A6A;
+}
